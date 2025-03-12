@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { FaGithub } from "react-icons/fa";
 import { Logo } from "../logo/Logo";
+import { ShoppingCartButton } from "./ShoppingCartButton";
 function GithubLink() {
   return (
     <motion.div
@@ -38,6 +39,7 @@ export const Navbar: React.FC<NavbarProps> = ({ children }) => {
           </div>
         )}
         <GithubLink />
+        <ShoppingCartButton></ShoppingCartButton>
       </div>
     </nav>
   );
