@@ -17,7 +17,7 @@ import user_service.user_service.entity.User;
 import user_service.user_service.service.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class UserController {
     @Autowired
