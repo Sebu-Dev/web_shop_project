@@ -1,5 +1,5 @@
 import useCartStore from '@/store/ShoppingCartStore';
-import { Product } from '@/types/ProductType';
+import { ProductType } from '@/types/ProductType';
 import { Button } from './ui/button';
 import {
   Card,
@@ -13,7 +13,7 @@ export const ShoppingCart: React.FC = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCartStore();
 
   // Berechne den Gesamtpreis
-  const totalPrice = cart.reduce((sum: number, item: Product) => {
+  const totalPrice = cart.reduce((sum: number, item: ProductType) => {
     // Wenn quantity nicht definiert, setze sie auf 1
     const quantity = item.quantity || 1;
     return sum + item.price * quantity;

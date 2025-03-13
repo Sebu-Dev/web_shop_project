@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_USERS } from '@/config/Api';
+import { UserType } from '@/types/User';
 
 // Hilfsfunktion zur Behandlung von Fehlern mit Typisierung
 const handleError = (error: unknown) => {
@@ -109,11 +110,7 @@ export const update = async () => {
 };
 
 // Register-Request für den Benutzer
-export const register = async (userData: {
-  username: string;
-  password: string;
-  email: string;
-}) => {
+export const register = async (userData: UserType) => {
   try {
     const response = await axios.post(API_USERS.REGISTER_URL, userData, {
       withCredentials: true, // Cookies mit der Anfrage senden
@@ -124,6 +121,7 @@ export const register = async (userData: {
     // Optional: Token speichern (falls zurückgegeben)
     if (response.data.token) {
       saveAuthToken(response.data.token);
+      return response.data;
     }
   } catch (error) {
     handleError(error); // Hier wird der Fehler an handleError weitergegeben

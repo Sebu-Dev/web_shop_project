@@ -1,9 +1,9 @@
-import { Product } from '@/types/ProductType';
+import { ProductType } from '@/types/ProductType';
 import { create } from 'zustand';
 
 interface CartState {
-  cart: Product[];
-  addToCart: (item: Product) => void;
+  cart: ProductType[];
+  addToCart: (item: ProductType) => void;
   removeFromCart: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
@@ -11,7 +11,7 @@ interface CartState {
 
 const useCartStore = create<CartState>((set) => ({
   cart: [],
-  addToCart: (item: Product) => {
+  addToCart: (item: ProductType) => {
     const quantity = item.quantity ?? 1;
 
     // Falls ja, die Menge des Produkts erhöhen

@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Product } from '@/types/ProductType';
+import { ProductType } from '@/types/ProductType';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 const MotionCard = motion(Card);
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product }: { product: ProductType }) {
   const navigate = useNavigate();
   function handleOnClick(): void {
     navigate(`/products/${product.id}`);
