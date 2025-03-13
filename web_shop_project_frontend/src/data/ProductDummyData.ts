@@ -1,4 +1,4 @@
-import { Product } from '@/types/ProcudtType';
+import { Product } from '@/types/ProductType';
 import { v4 as uuidv4 } from 'uuid';
 
 export const products: Product[] = Array.from({ length: 2000 }, (_, i) => ({

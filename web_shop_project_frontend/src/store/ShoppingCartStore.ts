@@ -1,4 +1,4 @@
-import { Product } from '@/types/ProcudtType';
+import { Product } from '@/types/ProductType';
 import { create } from 'zustand';
 
 interface CartState {
@@ -9,28 +9,29 @@ interface CartState {
   clearCart: () => void;
 }
 
-const useCartStore = create<CartState>((set, get) => ({
+const useCartStore = create<CartState>((set) => ({
   cart: [],
   addToCart: (item: Product) => {
-    const currentState = get();
     const quantity = item.quantity ?? 1;
 
-    // Prüfen, ob das Produkt bereits im Warenkorb ist
-    if (currentState.cart.some((i) => i.id === item.id)) {
-      // Falls ja, die Menge des Produkts erhöhen
-      set((state) => ({
-        cart: state.cart.map((i) =>
-          i.id === item.id
-            ? { ...i, quantity: (i.quantity || 0) + quantity }
-            : i
-        ),
-      }));
-    } else {
-      // Falls nein, das Produkt mit der angegebenen Menge (oder 1) hinzufügen
-      set((state) => ({
-        cart: [...state.cart, { ...item, quantity }],
-      }));
-    }
+    // Falls ja, die Menge des Produkts erhöhen
+    set((state) => {
+      // Prüfen, ob das Produkt bereits im Warenkorb ist
+      if (state.cart.some((i) => i.id === item.id)) {
+        return {
+          cart: state.cart.map((i) =>
+            i.id === item.id
+              ? { ...i, quantity: (i.quantity || 0) + quantity }
+              : i
+          ),
+        };
+      } else {
+        // Falls nein, das Produkt mit der angegebenen Menge (oder 1) hinzufügen
+        return {
+          cart: [...state.cart, { ...item, quantity }],
+        };
+      }
+    });
   },
   removeFromCart: (itemId: string) =>
     set((state) => ({

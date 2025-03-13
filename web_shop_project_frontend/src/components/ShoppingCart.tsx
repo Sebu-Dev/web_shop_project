@@ -1,5 +1,5 @@
 import useCartStore from '@/store/ShoppingCartStore';
-import { Product } from '@/types/ProcudtType';
+import { Product } from '@/types/ProductType';
 import { Button } from './ui/button';
 import {
   Card,
