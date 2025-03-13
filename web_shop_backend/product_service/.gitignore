@@ -13,19 +13,11 @@ target/
 .springBeans
 .sts4-cache
 
-#Docker
-.env
-
-# Temporäre Dateien
-*.tmp
-*.bak
-*.swp
-*~.nib
-.DS_Store
-
-# Lokale Konfigurationsdateien mit sensiblen Daten
-src/main/resources/application.properties
-src/main/resources/application.yml
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
 
 ### NetBeans ###
 /nbproject/private/
