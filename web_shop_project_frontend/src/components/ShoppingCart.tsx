@@ -1,64 +1,61 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Product } from '@/types/ProcudtType';
 import useCartStore from '@/store/ShoppingCartStore';
-
+import { Product } from '@/types/ProcudtType';
+import { Button } from './ui/button';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from './ui/card';
 
 export const ShoppingCart: React.FC = () => {
-  const { cart, addToCart, removeFromCart, updateQuantity, clearCart } = useCartStore();
-
-  // Beispiel-Produkt zum Testen
-  const sampleProduct: Product = {
-    id: '1',
-    name: 'Beispiel Produkt',
-    image: 'https://via.placeholder.com/150',
-    price: 29.99,
-    onSale: true,
-  };
+  const { cart, removeFromCart, updateQuantity, clearCart } = useCartStore();
 
   // Berechne den Gesamtpreis
   const totalPrice = cart.reduce((sum: number, item: Product) => {
-    return item.quantity ? sum + item.price * item.quantity : sum;
+    // Wenn quantity nicht definiert, setze sie auf 1
+    const quantity = item.quantity || 1;
+    return sum + item.price * quantity;
   }, 0);
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Warenkorb</h1>
-
-      {/* Button zum Testen */}
-      <Button
-        onClick={() => addToCart(sampleProduct)}
-        className="mb-4 bg-blue-600 hover:bg-blue-700"
-      >
-        Beispielprodukt hinzufügen
-      </Button>
+      <h1 className="mb-6 text-3xl font-bold">Warenkorb</h1>
 
       {cart.length === 0 ? (
-        <p className="text-gray-500 text-center">Dein Warenkorb ist leer.</p>
+        <p className="text-center text-gray-500">Dein Warenkorb ist leer.</p>
       ) : (
         <div className="space-y-4">
           {cart.map((item) => (
-            <Card key={item.id} className="w-full flex items-center">
+            <Card key={item.id} className="flex w-full items-center">
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-20 h-20 object-cover rounded-l-md"
+                className="h-20 w-20 rounded-l-md object-cover"
               />
               <div className="flex-1">
                 <CardHeader>
                   <CardTitle>
-                    {item.name} {item.onSale && <span className="text-red-500">(Im Angebot)</span>}
+                    {item.name}{' '}
+                    {item.onSale && (
+                      <span className="text-red-500">(Im Angebot)</span>
+                    )}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <p>Preis: {item.price.toFixed(2)} €</p>
                     <div className="flex items-center space-x-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => updateQuantity(item.id, Math.max(1, item.quantity || 1) - 1)}
+                        onClick={() =>
+                          updateQuantity(
+                            item.id,
+                            Math.max(1, item.quantity || 1) - 1
+                          )
+                        }
                       >
                         -
                       </Button>
@@ -66,7 +63,9 @@ export const ShoppingCart: React.FC = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => updateQuantity(item.id, (item.quantity || 0) + 1)}
+                        onClick={() =>
+                          updateQuantity(item.id, (item.quantity || 0) + 1)
+                        }
                       >
                         +
                       </Button>
@@ -86,7 +85,7 @@ export const ShoppingCart: React.FC = () => {
           ))}
 
           {/* Gesamtpreis und Warenkorb leeren */}
-          <div className="flex justify-between items-center mt-6">
+          <div className="mt-6 flex items-center justify-between">
             <p className="text-xl font-semibold">
               Gesamt: {totalPrice.toFixed(2)} €
             </p>
@@ -103,4 +102,3 @@ export const ShoppingCart: React.FC = () => {
     </div>
   );
 };
-

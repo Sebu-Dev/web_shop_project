@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Navbar } from './components/Navbar';
+import { Navbar } from './components/navbar/Navbar';
 import { Outlet, useNavigate } from 'react-router';
 import { Contact } from './components/Contact';
 
