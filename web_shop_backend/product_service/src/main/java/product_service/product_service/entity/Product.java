@@ -1,4 +1,4 @@
-package main.java.product_service.product_service.entity;
+package product_service.product_service.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

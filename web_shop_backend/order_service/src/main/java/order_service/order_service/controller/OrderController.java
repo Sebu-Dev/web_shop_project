@@ -9,6 +9,7 @@ import order_service.order_service.service.OrderService;
 import order_service.order_service.service.ProductClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +41,7 @@ public class OrderController {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("@userSecurity.checkUserId(authentication, #userId)")
     public ResponseEntity<List<OrderResponseDTO>> getOrdersByUser(@PathVariable Long userId) {
         List<Order> orders = orderService.getOrdersByUserId(userId);
         List<OrderResponseDTO> orderDTOs = orders.stream()
