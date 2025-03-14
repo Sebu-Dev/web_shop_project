@@ -1,4 +1,4 @@
-package product_service.product_service.config;
+package order_service.order_service.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,13 +21,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // GET-Endpunkte für USER und ADMIN
-                        .requestMatchers("/api/products", "/api/products/pagination", "/api/products/{id}")
+                        .requestMatchers("/api/orders", "/api/orders/user/{userId}", "/api/orders/{id}")
                         .hasAnyRole("USER", "ADMIN")
-                        // POST, PUT, DELETE nur für ADMIN
-                        .requestMatchers("/api/products/**")
+                        .requestMatchers("/api/orders/**")
                         .hasRole("ADMIN")
-                        // Alle anderen Anfragen erfordern Authentifizierung
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(userServiceClient),
                         UsernamePasswordAuthenticationFilter.class)
@@ -36,4 +33,8 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 }
