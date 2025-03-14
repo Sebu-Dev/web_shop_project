@@ -23,10 +23,12 @@ public class ProductClient {
 
     public List<ProductDTO> getProductsByIds(List<Long> productIds) {
         // Annahme: product_service hat einen Endpunkt /api/products?ids=1,2,3
-        String ids = String.join(",", productIds.stream().map(String::valueOf).collect(Collectors.toList()));
+        String ids = String.join(",",
+                productIds.stream().map(String::valueOf).collect(Collectors.toList()));
         ProductDTO[] products = restTemplate.getForObject(
                 "http://localhost:8002/api/products?ids=" + ids,
                 ProductDTO[].class);
         return Arrays.asList(products);
     }
+
 }

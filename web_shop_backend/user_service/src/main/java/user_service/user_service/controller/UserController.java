@@ -73,6 +73,7 @@ public class UserController {
         @PostMapping("/logout")
         public ResponseEntity<Void> logout() {
                 // Setze das authToken-Cookie mit maxAge=0, um es zu löschen
+                @SuppressWarnings("null")
                 ResponseCookie cookie = ResponseCookie.from("authToken", null)
                                 .httpOnly(true)
                                 .secure(false) // Setze auf true in Produktion mit HTTPS
