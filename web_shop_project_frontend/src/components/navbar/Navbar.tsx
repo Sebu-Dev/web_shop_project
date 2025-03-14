@@ -1,6 +1,6 @@
 import { Logo } from '../../logo/Logo';
 import { HomeButton } from './HomeButton';
-import { LoginButton } from './LoginButton';
+import { UserButton } from './UserButton';
 import { ShoppingCartButton } from './ShoppingCartButton';
 
 interface NavbarProps {
@@ -21,7 +21,7 @@ export const Navbar: React.FC<NavbarProps> = ({ children }) => {
         )}
         <ShoppingCartButton></ShoppingCartButton>
         <HomeButton></HomeButton>
-        <LoginButton></LoginButton>
+        <UserButton></UserButton>
       </div>
     </nav>
   );

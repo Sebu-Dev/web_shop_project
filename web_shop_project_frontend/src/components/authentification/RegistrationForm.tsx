@@ -36,7 +36,7 @@ export function RegistrationForm({
     // Create the user object
     const user: UserType = {
       id: 0,
-      name: userName,
+      username: userName,
       email: email,
       adress: address,
     };

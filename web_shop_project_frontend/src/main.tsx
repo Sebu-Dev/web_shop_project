@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LandingPage } from './pages/LandingPage.tsx';
 import { Contact } from './components/Contact.tsx';
 import { About } from './components/About.tsx';
-import { User } from './components/User.tsx';
+import { User } from './components/user/User.tsx';
 import { Layout } from './Layout.tsx';
 import { ShoppingCart } from './components/ShoppingCart.tsx';
 import { ROUTES } from './config/Routes.ts';

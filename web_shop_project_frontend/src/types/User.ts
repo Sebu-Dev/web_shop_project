@@ -1,7 +1,12 @@
 export interface UserType {
   id: number;
-  name: string;
+  username: string;
   email: string;
   adress: string;
   role?: string;
+}
+export interface LoginResponse {
+  user: UserType;
+  accessToken: string;
+  refreshToken: string;
 }
