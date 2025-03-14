@@ -4,11 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { X } from 'lucide-react';
 import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { login } from '@/api/LoginApi';
-import { useUserSession } from '@/store/UserSessionStore';
-
-import { User } from '@/types/User';
+import { useLogin } from '@/hooks/useLogin';
 
 interface LoginFormProps extends React.ComponentProps<'form'> {
   onSwitchToRegister: () => void;
@@ -21,21 +17,15 @@ export function LoginForm({
   onClose,
   ...props
 }: LoginFormProps) {
-  const { setUser } = useUserSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const mutation = useMutation({
-    mutationFn: login,
-    onError: console.log,
-    onSuccess: (data: User) => setUser(data),
-  });
-
+  const { mutate } = useLogin();
   const onSubmit = () => {
     const credentials = {
       username: email,
       password,
     };
-    mutation.mutate(credentials);
+    mutate(credentials);
   };
   return (
     <div className="flex justify-center">

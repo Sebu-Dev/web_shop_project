@@ -1,7 +1,7 @@
-import { Product } from '@/types/ProductType';
+import { ProductType } from '@/types/ProductType';
 import { v4 as uuidv4 } from 'uuid';
 
-export const products: Product[] = Array.from({ length: 2000 }, (_, i) => ({
+export const products: ProductType[] = Array.from({ length: 2000 }, (_, i) => ({
   id: uuidv4(),
   name: `Produkt ${i + 1}`,
   description: 'HIER KÖNNTE IHRE WERBUNG STEHEN',

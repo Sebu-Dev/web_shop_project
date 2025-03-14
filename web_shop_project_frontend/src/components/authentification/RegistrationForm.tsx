@@ -3,6 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { X } from 'lucide-react';
+import { useState } from 'react';
+import { useRegister } from '@/hooks/useRegister';
+import { UserType } from '@/types/User';
 
 interface RegistrationFormProps extends React.ComponentProps<'form'> {
   onSwitchToLogin: () => void;
@@ -15,6 +18,33 @@ export function RegistrationForm({
   onClose,
   ...props
 }: RegistrationFormProps) {
+  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [address, setAddress] = useState('');
+  const { mutate } = useRegister();
+
+  // Handle form submission
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      console.error('Passwords do not match');
+      return;
+    }
+
+    // Create the user object
+    const user: UserType = {
+      id: 0,
+      name: userName,
+      email: email,
+      adress: address,
+    };
+
+    // Call the mutation function
+    mutate(user);
+  };
+
   return (
     <div className="flex justify-center">
       <form
@@ -22,11 +52,7 @@ export function RegistrationForm({
           'relative flex w-full max-w-md flex-col gap-8 rounded-lg bg-white p-8 shadow-lg',
           className
         )}
-        onSubmit={(e) => {
-          e.preventDefault();
-          console.log('Registration submitted');
-          onClose();
-        }}
+        onSubmit={onSubmit}
         {...props}
       >
         {/* Schließen-Button oben rechts im Formular */}
@@ -52,6 +78,8 @@ export function RegistrationForm({
               Username
             </Label>
             <Input
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
               id="username"
               type="text"
               placeholder="Your username"
@@ -64,6 +92,8 @@ export function RegistrationForm({
               Email
             </Label>
             <Input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               id="email"
               type="email"
               placeholder="m@example.com"
@@ -76,6 +106,8 @@ export function RegistrationForm({
               Password
             </Label>
             <Input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               id="password"
               type="password"
               required
@@ -90,12 +122,31 @@ export function RegistrationForm({
               Confirm Password
             </Label>
             <Input
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               id="confirmPassword"
               type="password"
               required
               className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
+
+          {/* Neue Felder für Adresse und Rolle */}
+          <div className="grid gap-2">
+            <Label htmlFor="address" className="font-medium text-gray-700">
+              Address
+            </Label>
+            <Input
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              id="address"
+              type="text"
+              placeholder="Your address"
+              required
+              className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+
           <Button
             type="submit"
             className="w-full rounded-md bg-blue-600 py-2 text-white transition-colors hover:bg-blue-700"

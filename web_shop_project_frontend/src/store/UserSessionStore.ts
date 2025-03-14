@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { User } from '@/types/User';
+import { UserType } from '@/types/User';
 
 type SessionState = {
-  user: User | null;
+  user: UserType | null;
   accessToken: string | null;
   refreshToken: string | null;
-  setUser: (user: User) => void;
+  setUser: (user: UserType) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
 };
@@ -17,7 +17,7 @@ export const useUserSession = create<SessionState>()(
       user: null,
       accessToken: null,
       refreshToken: null,
-      setUser: (user: User) => set(() => ({ user })),
+      setUser: (user: UserType) => set(() => ({ user })),
       setTokens: (accessToken: string, refreshToken: string) =>
         set(() => ({ accessToken, refreshToken })),
       logout: () =>
