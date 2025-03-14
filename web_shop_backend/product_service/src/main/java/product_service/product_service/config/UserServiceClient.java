@@ -1,4 +1,4 @@
-package product_service.product_service.service;
+package product_service.product_service.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import product_service.product_service.config.UserDetailsResponse;
-
 @Component
 public class UserServiceClient {
 
@@ -18,9 +16,9 @@ public class UserServiceClient {
     @Autowired
     private RestTemplate restTemplate;
 
-    public UserDetailsResponse validateUser(String username, String password) {
+    public UserDetailsResponse validateUser(String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(username, password);
+        headers.add("Cookie", "authToken=" + token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         try {
@@ -31,8 +29,38 @@ public class UserServiceClient {
                     UserDetailsResponse.class);
             return response.getBody();
         } catch (Exception e) {
-            System.err.println("Fehler beim Validieren des Benutzers: " + e.getMessage());
-            return null; // Invalid credentials
+            System.err.println("Fehler beim Validieren des Tokens: " + e.getMessage());
+            return null;
         }
+    }
+}
+
+class UserDetailsResponse {
+    private boolean valid;
+    private String role;
+    private String username;
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

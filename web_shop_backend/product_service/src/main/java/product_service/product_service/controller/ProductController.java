@@ -1,33 +1,32 @@
 package product_service.product_service.controller;
 
-import product_service.product_service.entity.Product;
-import product_service.product_service.service.ProductService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
+import product_service.product_service.entity.Product;
+import product_service.product_service.service.ProductService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
+
     @Autowired
     private ProductService productService;
 
-    // Frontend-Anfrage muss pageable parameter definieren bsp.:
-    // axios.get(http://localhost:8003/api/products/pagination/?page=0&size=10,
-    // setzt Seite 1
-    // mit 10 Elementen)
-    @GetMapping("/pagination")
-    public ResponseEntity<Page<Product>> getAllProducts(Pageable pageable) {
-        return ResponseEntity.ok(productService.getAllProducts(pageable));
-    }
-
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
+    }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<Page<Product>> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(productService.getAllProducts(PageRequest.of(page, size)));
     }
 
     @GetMapping("/{id}")

@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
-import product_service.product_service.service.UserServiceClient;
 
 @Configuration
 @EnableWebSecurity
@@ -22,11 +21,17 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/products", "/api/products/pagination", "/api/products/{id}").permitAll()
-                        .requestMatchers("/api/products/**").hasRole("ADMIN")
+                        // GET-Endpunkte für USER und ADMIN
+                        .requestMatchers("/api/products", "/api/products/pagination", "/api/products/{id}")
+                        .hasAnyRole("USER", "ADMIN")
+                        // POST, PUT, DELETE nur für ADMIN
+                        .requestMatchers("/api/products/**")
+                        .hasRole("ADMIN")
+                        // Alle anderen Anfragen erfordern Authentifizierung
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(userServiceClient),
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class)
+                .httpBasic(httpBasic -> httpBasic.disable());
 
         return http.build();
     }
