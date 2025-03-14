@@ -17,7 +17,8 @@ public class ProductController {
     private ProductService productService;
 
     // Frontend-Anfrage muss pageable parameter definieren bsp.:
-    // axios.get(http://localhost:8003/api/products/pagination/?page=0&size=10, setzt Seite 1
+    // axios.get(http://localhost:8003/api/products/pagination/?page=0&size=10,
+    // setzt Seite 1
     // mit 10 Elementen)
     @GetMapping("/pagination")
     public ResponseEntity<Page<Product>> getAllProducts(Pageable pageable) {

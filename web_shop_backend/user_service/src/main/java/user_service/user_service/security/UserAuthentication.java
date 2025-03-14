@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 public class UserAuthentication implements Authentication {
     private final String USERID;
     private final String ROLE;
+    private boolean authenticated = true;
 
     public UserAuthentication(String userId, String role) {
         this.USERID = userId;
@@ -21,20 +22,31 @@ public class UserAuthentication implements Authentication {
     }
 
     @Override
-    public Object getCredentials() { return null; }
+    public Object getCredentials() {
+        return null;
+    }
 
     @Override
-    public Object getDetails() { return null; }
+    public Object getDetails() {
+        return null;
+    }
 
     @Override
-    public Object getPrincipal() { return USERID; }
+    public Object getPrincipal() {
+        return USERID;
+    }
 
     @Override
-    public boolean isAuthenticated() { return true; }
+    public boolean isAuthenticated() {
+        return authenticated;
+    }
 
     @Override
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException { }
+    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+    }
 
     @Override
-    public String getName() { return USERID; }
+    public String getName() {
+        return USERID;
+    }
 }
