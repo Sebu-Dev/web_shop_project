@@ -121,5 +121,10 @@ seedDatabase()
     .then(() => {
         console.log('Seeding process completed');
         pool.end();
+        process.exit(0);
     })
-    .catch(err => console.error('Seeding process failed:', err.message));
+    .catch(err => {
+        console.error('Seeding process failed:', err.message);
+        pool.end();
+        process.exit(1);
+    });
