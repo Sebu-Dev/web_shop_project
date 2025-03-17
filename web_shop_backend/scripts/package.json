@@ -7,7 +7,7 @@
     "start": "node seed.js"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "pg": "^8.11.5"
+    "pg": "^8.11.5",
+    "node-fetch": "^2.6.1"
   }
 }
