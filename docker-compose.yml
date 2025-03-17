@@ -81,6 +81,7 @@ services:
     build:
       context: ./web_shop_backend/scripts
       dockerfile: dockerfile
+    command: npm start
     environment:
       - DB_USER=${DB_USER}
       - DB_HOST=${DB_HOST}

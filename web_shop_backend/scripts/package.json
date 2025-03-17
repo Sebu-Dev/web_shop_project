@@ -1,13 +1,11 @@
 {
-  "name": "webshop-seed",
+  "name": "seed",
   "version": "1.0.0",
-  "description": "Seed script for webshop database",
-  "main": "seed.js",
   "scripts": {
-    "start": "node seed.js"
+      "start": "node seed.js"
   },
   "dependencies": {
-    "pg": "^8.11.5",
-    "node-fetch": "^2.6.1"
+      "axios": "^1.6.8",
+      "pg": "^8.11.5"
   }
 }
