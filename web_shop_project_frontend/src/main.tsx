@@ -59,6 +59,14 @@ const router = createBrowserRouter([
         path: ROUTES.PRODUCT_DETAILS,
         element: <ProductDetails />,
       },
+      {
+        path: ROUTES.USER_EDIT,
+        element: <div>Edit Profile (TBD)</div>,
+      },
+      {
+        path: ROUTES.USER_ORDERS,
+        element: <div>Order History (TBD)</div>,
+      },
     ],
   },
 ]);

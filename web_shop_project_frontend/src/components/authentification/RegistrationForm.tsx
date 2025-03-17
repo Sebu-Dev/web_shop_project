@@ -5,7 +5,6 @@ import { Label } from '@/components/ui/label';
 import { X } from 'lucide-react';
 import { useState } from 'react';
 import { useRegister } from '@/hooks/useRegister';
-import { UserType } from '@/types/User';
 
 interface RegistrationFormProps extends React.ComponentProps<'form'> {
   onSwitchToLogin: () => void;
@@ -25,7 +24,6 @@ export function RegistrationForm({
   const [address, setAddress] = useState('');
   const { mutate } = useRegister();
 
-  // Handle form submission
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -33,16 +31,17 @@ export function RegistrationForm({
       return;
     }
 
-    // Create the user object
-    const user: UserType = {
-      id: 0,
+    const user = {
       username: userName,
-      email: email,
-      adress: address,
+      email,
+      password,
+      adress: address, // Keep consistent with UserType
     };
 
-    // Call the mutation function
-    mutate(user);
+    mutate(user, {
+      onSuccess: () => onClose(),
+      onError: (error) => console.error('Registration failed:', error),
+    });
   };
 
   return (
@@ -55,7 +54,6 @@ export function RegistrationForm({
         onSubmit={onSubmit}
         {...props}
       >
-        {/* Schließen-Button oben rechts im Formular */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
@@ -130,8 +128,6 @@ export function RegistrationForm({
               className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
-
-          {/* Neue Felder für Adresse und Rolle */}
           <div className="grid gap-2">
             <Label htmlFor="address" className="font-medium text-gray-700">
               Address
@@ -146,7 +142,6 @@ export function RegistrationForm({
               className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
-
           <Button
             type="submit"
             className="w-full rounded-md bg-blue-600 py-2 text-white transition-colors hover:bg-blue-700"

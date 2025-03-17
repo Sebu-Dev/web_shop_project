@@ -20,13 +20,18 @@ export function LoginForm({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { mutate } = useLogin();
-  const onSubmit = () => {
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     const credentials = {
       username: email,
       password,
     };
-    mutate(credentials);
+    mutate(credentials, {
+      onSuccess: () => onClose(), // Close popup on successful login
+    });
   };
+
   return (
     <div className="flex justify-center">
       <form
@@ -34,14 +39,9 @@ export function LoginForm({
           'relative flex w-full max-w-md flex-col gap-8 rounded-lg bg-white p-8 shadow-lg',
           className
         )}
-        onSubmit={(e) => {
-          e.preventDefault();
-          console.log('Login submitted');
-          onClose();
-        }}
+        onSubmit={onSubmit}
         {...props}
       >
-        {/* Schließen-Button oben rechts im Formular */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
@@ -87,9 +87,7 @@ export function LoginForm({
             </div>
             <Input
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              onChange={(e) => setPassword(e.target.value)}
               id="password"
               type="password"
               required
@@ -98,7 +96,6 @@ export function LoginForm({
           </div>
           <Button
             type="submit"
-            onClick={onSubmit}
             className="w-full rounded-md bg-blue-600 py-2 text-white transition-colors hover:bg-blue-700"
           >
             Login

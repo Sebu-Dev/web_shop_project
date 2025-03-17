@@ -1,9 +1,6 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { User } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
-import { LoginForm } from '../authentification/LoginForm';
-import { RegistrationForm } from '../authentification/RegistrationForm';
-import { Popup } from '../ui-components/Popup';
 import { useUserSession } from '@/store/UserSessionStore';
 import {
   DropdownMenu,
@@ -13,12 +10,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
+import { Link } from 'react-router-dom';
+import { useLoginPopup } from '@/store/LoginPopupStore';
 
 export const UserButton = () => {
-  const [showLoginPopup, setShowLoginPopup] = useState(false);
-  const [isLogin, setIsLogin] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, logout } = useUserSession();
+  const { showLogin } = useLoginPopup();
 
   const handleLogoutClick = () => {
     try {
@@ -29,19 +27,6 @@ export const UserButton = () => {
     setDropdownOpen(false);
   };
 
-  const closePopup = () => {
-    setShowLoginPopup(false);
-  };
-
-  const switchToRegister = () => {
-    setIsLogin(false);
-  };
-
-  const switchToLogin = () => {
-    setIsLogin(true);
-  };
-
-  // Hover-Effekt für DropdownMenuItem
   const itemVariants = {
     hover: { backgroundColor: '#f1f5f9', transition: { duration: 0.2 } },
   };
@@ -55,80 +40,59 @@ export const UserButton = () => {
             whileTap={{ scale: 0.9 }}
             onClick={() => {
               if (!user) {
-                setShowLoginPopup(true);
-                setIsLogin(true);
+                showLogin();
                 setDropdownOpen(false);
               }
             }}
           >
-            {!user ? <User size={40} /> : <User color="teal" size={40} />}
+            {!user ? (
+              <UserIcon size={40} />
+            ) : (
+              <UserIcon color="teal" size={40} />
+            )}
           </motion.div>
         </DropdownMenuTrigger>
 
         {user && (
-          <div>
-            <DropdownMenuContent
-              align="end"
-              className="z-50 min-w-[180px] rounded-md bg-white p-2 shadow-md"
-            >
-              <DropdownMenuLabel className="text-sm font-medium text-gray-700">
-                Mein Konto
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator className="my-1 border-t border-gray-200" />
-              <motion.div whileHover="hover" variants={itemVariants}>
-                <DropdownMenuItem
-                  onClick={() => setDropdownOpen(false)}
-                  className="cursor-pointer rounded-sm px-2 py-1 text-sm text-gray-700 focus:outline-none"
-                >
+          <DropdownMenuContent
+            align="end"
+            className="z-50 min-w-[180px] rounded-md bg-white p-2 shadow-md"
+          >
+            <DropdownMenuLabel className="text-sm font-medium text-gray-700">
+              Mein Konto
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className="my-1 border-t border-gray-200" />
+            <motion.div whileHover="hover" variants={itemVariants}>
+              <DropdownMenuItem
+                asChild
+                className="cursor-pointer rounded-sm px-2 py-1 text-sm text-gray-700 focus:outline-none"
+              >
+                <Link to="/user" onClick={() => setDropdownOpen(false)}>
                   Profil
-                </DropdownMenuItem>
-              </motion.div>
-              <motion.div whileHover="hover" variants={itemVariants}>
-                <DropdownMenuItem
-                  onClick={() => setDropdownOpen(false)}
-                  className="cursor-pointer rounded-sm px-2 py-1 text-sm text-gray-700 focus:outline-none"
-                >
+                </Link>
+              </DropdownMenuItem>
+            </motion.div>
+            <motion.div whileHover="hover" variants={itemVariants}>
+              <DropdownMenuItem
+                asChild
+                className="cursor-pointer rounded-sm px-2 py-1 text-sm text-gray-700 focus:outline-none"
+              >
+                <Link to="/user/orders" onClick={() => setDropdownOpen(false)}>
                   Rechnungen
-                </DropdownMenuItem>
-              </motion.div>
-              <motion.div whileHover="hover" variants={itemVariants}>
-                <DropdownMenuItem
-                  onClick={handleLogoutClick}
-                  className="cursor-pointer rounded-sm px-2 py-1 text-sm text-red-600 focus:outline-none"
-                >
-                  Logout
-                </DropdownMenuItem>
-              </motion.div>
-            </DropdownMenuContent>
-          </div>
+                </Link>
+              </DropdownMenuItem>
+            </motion.div>
+            <motion.div whileHover="hover" variants={itemVariants}>
+              <DropdownMenuItem
+                onClick={handleLogoutClick}
+                className="cursor-pointer rounded-sm px-2 py-1 text-sm text-red-600 focus:outline-none"
+              >
+                Logout
+              </DropdownMenuItem>
+            </motion.div>
+          </DropdownMenuContent>
         )}
       </DropdownMenu>
-
-      <AnimatePresence>
-        {showLoginPopup && !dropdownOpen && (
-          <Popup isOpen={showLoginPopup} onClose={closePopup}>
-            <motion.div
-              key={isLogin ? 'login' : 'register'}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {isLogin ? (
-                <LoginForm
-                  onSwitchToRegister={switchToRegister}
-                  onClose={closePopup}
-                />
-              ) : (
-                <RegistrationForm
-                  onSwitchToLogin={switchToLogin}
-                  onClose={closePopup}
-                />
-              )}
-            </motion.div>
-          </Popup>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

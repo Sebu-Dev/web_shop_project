@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { Navbar } from './components/navbar/Navbar';
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Contact } from './components/Contact';
+import { LoginPopup } from './components/LoginPopup'; // Add this import
+import { UserButton } from './components/UserButton'; // Add if not in Navbar
 
 interface LayoutProps {
   nav?: boolean;
@@ -15,12 +17,12 @@ export const Layout: React.FC<LayoutProps> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    const sections = document.querySelectorAll('[data-section] ');
+    const sections = document.querySelectorAll('[data-section]');
     const observer = new IntersectionObserver(
       (entries) => {
-        const visibileSection = entries.find((entry) => entry.isIntersecting);
-        if (visibileSection) {
-          const newPath = visibileSection.target.getAttribute('data-section');
+        const visibleSection = entries.find((entry) => entry.isIntersecting);
+        if (visibleSection) {
+          const newPath = visibleSection.target.getAttribute('data-section');
           if (newPath) {
             navigate(newPath, { replace: true });
           }
@@ -31,6 +33,7 @@ export const Layout: React.FC<LayoutProps> = ({
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, [navigate]);
+
   return (
     <div className="overflow-x-hidden text-neutral-300 antialiased selection:bg-cyan-300 selection:text-cyan-900">
       <div className="fixed top-0 -z-10 h-full w-full">
@@ -39,11 +42,16 @@ export const Layout: React.FC<LayoutProps> = ({
         ></div>
       </div>
       <div className="container mx-auto px-8">
-        {nav && <Navbar />}
+        {nav && (
+          <header>
+            <Navbar />
+          </header>
+        )}
         <Outlet />
         <section id="contact">
           <Contact />
         </section>
+        <LoginPopup />
       </div>
     </div>
   );
