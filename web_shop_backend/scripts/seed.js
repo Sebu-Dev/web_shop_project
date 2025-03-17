@@ -1,17 +1,6 @@
 const { Pool } = require('pg');
 const fetch = require('node-fetch');
 
-// Debugging: Alle Umgebungsvariablen ausgeben
-console.log('Umgebungsvariablen:', process.env);
-
-const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
-});
-
 // Funktion zum Warten auf die Datenbankverbindung
 async function connectToDatabase() {
     let attempts = 0;
@@ -94,10 +83,36 @@ async function waitForTables(client) {
     throw new Error(`Tabellen wurden nach ${maxAttempts} Versuchen nicht vollständig erstellt`);
 }
 
-// Hauptfunktion zum Befüllen der Datenbank
-async function seedDatabase() {
-    let client;
+const { Pool } = require('pg');
+
+const pool = new Pool({
+    user: 'pornoPeter',
+    host: 'postgres',
+    database: 'shop_db',
+    password: 'SwordfishSQL',
+    port: 5432,
+});
+
+async function waitForPostgres(maxAttempts = 30, delay = 2000) {
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            await pool.query('SELECT 1');
+            console.log('Datenbank erreichbar');
+            return true;
+        } catch (error) {
+            console.log(`Datenbank nicht erreichbar: ${error.message}`);
+            console.log(`Warte auf Datenbank (Versuch ${attempt}/${maxAttempts})...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+    }
+    throw new Error('Datenbank nach 30 Versuchen nicht erreichbar');
+}
+
+(async () => {
     try {
+        await waitForPostgres();
+        console.log('Datenbank bereit, starte Seeding...');
+        let client;
         // Verbindung herstellen, auf Backends und Tabellen warten
         client = await connectToDatabase();
         await waitForBackends();
@@ -175,24 +190,14 @@ async function seedDatabase() {
         // Transaktion abschließen
         await client.query('COMMIT');
         console.log('Transaktion abgeschlossen - Datenbank erfolgreich befüllt');
-    } catch (err) {
-        if (client) {
-            await client.query('ROLLBACK');
-            console.error('Rollback der Transaktion wegen Fehler:', err.message);
-        } else {
-            console.error('Fehler vor Start der Transaktion:', err.message);
-        }
+    
+    } catch (error) {
+        console.error(error.message);
         process.exit(1);
     } finally {
-        if (client) {
-            client.release();
-            console.log('Datenbankverbindung freigegeben');
-        }
-        pool.end();
-        console.log('Datenbankverbindung geschlossen');
-        process.exit(0);
+        await pool.end();
     }
-}
+})();
 
-// Script ausführen
-seedDatabase();
+
+
