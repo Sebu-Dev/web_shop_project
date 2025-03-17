@@ -4,7 +4,7 @@ import { ProductType } from '@/types/ProductType';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-const MotionCard = motion(Card);
+const MotionCard = motion.create(Card);
 
 export function ProductCard({ product }: { product: ProductType }) {
   const navigate = useNavigate();

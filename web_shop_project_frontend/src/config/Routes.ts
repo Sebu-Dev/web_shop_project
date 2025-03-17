@@ -6,4 +6,6 @@ export const ROUTES = {
   ABOUT: '/about',
   CONTACT: '/contact',
   PRODUCT_DETAILS: '/products/:id',
+  CHECKOUT: '/checkout',
+  CHECKOUT_SUCCESS: '/checkout-success',
 };

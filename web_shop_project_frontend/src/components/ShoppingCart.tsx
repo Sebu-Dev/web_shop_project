@@ -8,9 +8,16 @@ import {
   CardContent,
   CardFooter,
 } from './ui/card';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@/config/Routes';
 
 export const ShoppingCart: React.FC = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCartStore();
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    navigate(ROUTES.CHECKOUT);
+  };
 
   // Berechne den Gesamtpreis
   const totalPrice = cart.reduce((sum: number, item: ProductType) => {
@@ -66,9 +73,7 @@ export const ShoppingCart: React.FC = () => {
                         onClick={() =>
                           updateQuantity(item.id, (item.quantity || 0) + 1)
                         }
-                      >
-                        +
-                      </Button>
+                      ></Button>
                     </div>
                   </div>
                 </CardContent>
@@ -78,6 +83,9 @@ export const ShoppingCart: React.FC = () => {
                     onClick={() => removeFromCart(item.id)}
                   >
                     Entfernen
+                  </Button>
+                  <Button variant="default" onClick={handleCheckout}>
+                    Abschließen
                   </Button>
                 </CardFooter>
               </div>

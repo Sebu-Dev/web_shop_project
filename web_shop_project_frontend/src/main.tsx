@@ -9,9 +9,13 @@ import { About } from './components/About.tsx';
 import { User } from './components/user/User.tsx';
 import { Layout } from './Layout.tsx';
 import { ShoppingCart } from './components/ShoppingCart.tsx';
-import { ROUTES } from './config/Routes.ts';
 import ProductDetails from './components/product/ProductDetails.tsx';
 import { ProductPagination } from './components/product/ProductPageination.tsx';
+
+import { ROUTES } from './config/Routes.ts';
+import CheckoutSuccess from './pages/Checkout/CheckoutSuccess.tsx';
+import CheckoutPage from './pages/Checkout/CheckoutPage.tsx';
+
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
@@ -42,6 +46,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.USER,
         element: <User />,
+      },
+      {
+        path: ROUTES.CHECKOUT,
+        element: <CheckoutPage />,
+      },
+      {
+        path: ROUTES.CHECKOUT_SUCCESS,
+        element: <CheckoutSuccess />,
       },
       {
         path: ROUTES.PRODUCT_DETAILS,
