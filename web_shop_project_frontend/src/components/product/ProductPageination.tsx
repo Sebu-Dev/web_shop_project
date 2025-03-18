@@ -98,6 +98,7 @@ export function ProductPagination() {
                   href="#"
                   isActive={page === currentPage}
                   onClick={() => setCurrentPage(page)}
+                  className={page === currentPage ? 'font-bold text-black' : ''}
                 >
                   {page}
                 </PaginationLink>
