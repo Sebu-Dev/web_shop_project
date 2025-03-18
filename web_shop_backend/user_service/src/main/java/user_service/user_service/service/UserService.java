@@ -1,6 +1,7 @@
 package user_service.user_service.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import user_service.user_service.dto.UserRegistrationDTO;
@@ -23,7 +24,7 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(registrationDTO.getPassword()));
         user.setEmail(registrationDTO.getEmail());
         user.setAddress(registrationDTO.getAddress());
-        user.setRole("ROLE_USER");
+        user.setRole(registrationDTO.getRole());
         return userRepository.save(user);
     }
 
@@ -66,6 +67,25 @@ public class UserService {
         if (updateDTO.getAddress() != null && !updateDTO.getAddress().isEmpty()) {
             user.setAddress(updateDTO.getAddress());
         }
+        if (updateDTO.getRole() != null && !updateDTO.getRole().isEmpty()) {
+            user.setRole(updateDTO.getRole());
+        }
         return userRepository.save(user);
+    }
+
+    public User authenticate(String username, String password) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        if (!passwordEncoder.matches(password, user.getPasswordHash())) {
+            throw new UsernameNotFoundException("Invalid password for user: " + username);
+        }
+        return user;
+    }
+
+    // Gibt die Rolle eines Benutzers zurück
+    public String getUserRole(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        return user.getRole();
     }
 }

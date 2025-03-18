@@ -1,4 +1,4 @@
-package order_service.order_service.service;
+package order_service.order_service.config;
 
 import order_service.order_service.dto.ProductDTO;
 import org.springframework.stereotype.Service;

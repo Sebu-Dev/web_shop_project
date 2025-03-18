@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "node-fetch": "^2.6.1",
-    "tough-cookie": "^4.0.0"
-  },
-  "scripts": {
-    "seed": "node seed.js"
-  }
-}
