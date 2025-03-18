@@ -40,7 +40,7 @@ export const User = () => {
               <div className="space-y-2 md:col-span-2">
                 <p className="text-sm text-gray-500">Adresse</p>
                 <p className="text-lg font-medium">
-                  {user.adress || 'Keine Adresse angegeben'}
+                  {user.address || 'Keine Adresse angegeben'}
                 </p>
               </div>
             </div>

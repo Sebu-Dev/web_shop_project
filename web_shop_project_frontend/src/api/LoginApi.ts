@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_USERS } from '@/config/Api';
-import { RegisterUserInput } from '@/types/User';
+import { RegisterUserInput, UpdateUserType } from '@/types/User';
 
 // Hilfsfunktion zur Behandlung von Fehlern mit Typisierung
 const handleError = (error: unknown) => {
@@ -82,30 +82,30 @@ export const deleteUser = async () => {
       throw new Error('User deletion failed');
     }
   } catch (error) {
-    handleError(error); // Hier wird der Fehler an handleError weitergegeben
+    handleError(error);
   }
 };
 
 // Update-Request für den Benutzer
-export const update = async () => {
+export const updateUserApiCall = async (user: UpdateUserType) => {
   try {
-    const response = await axios.put(
-      API_USERS.UPDATE_URL,
-      {},
-      {
-        withCredentials: true, // Cookies mit der Anfrage senden
-      }
-    );
+    const response = await axios.put(API_USERS.UPDATE_URL, user, {
+      withCredentials: true, // Cookies mit der Anfrage senden
+    });
 
     if (response.status === 200) {
       // Cookie im Frontend löschen
       removeAuthToken();
       console.log('Benutzer erfolgreich aktualisiert');
+      if (response.data.token) {
+        saveAuthToken(response.data.token);
+        return response.data;
+      }
     } else {
       throw new Error('Update failed');
     }
   } catch (error) {
-    handleError(error); // Hier wird der Fehler an handleError weitergegeben
+    handleError(error);
   }
 };
 

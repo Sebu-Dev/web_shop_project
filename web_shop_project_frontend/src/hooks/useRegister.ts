@@ -18,7 +18,7 @@ export const useRegister = () => {
               id: Math.floor(Math.random() * 10000) + 1,
               username: userData.username,
               email: userData.email,
-              adress: userData.adress,
+              address: userData.address,
             },
             accessToken: 'dummy-access-token-' + Date.now(),
             refreshToken: 'dummy-refresh-token-' + Date.now(),
