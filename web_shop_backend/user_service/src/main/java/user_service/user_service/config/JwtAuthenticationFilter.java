@@ -13,14 +13,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.security.Key;
 import java.util.Collections;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String SECRET_KEY = "your-very-secure-secret-key-with-at-least-32-chars"; // Mindestens 32 Zeichen für HS512
+    private static final String SECRET_KEY = "your-very-secure-secret-key-with-at-least-32-chars"; // Mindestens 32
+                                                                                                   // Zeichen für HS512
     private static final String COOKIE_NAME = "authToken";
     private final Key signingKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes()); // Schlüssel für HS512
 

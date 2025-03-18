@@ -8,6 +8,8 @@ import user_service.user_service.entity.User;
 import user_service.user_service.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -22,15 +24,17 @@ import java.util.Date;
 @RequestMapping("/api/users")
 public class UserController {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserService userService;
 
-    private static final String SECRET_KEY = "your-very-secure-secret-key-with-at-least-32-chars"; // Muss mit JwtAuthenticationFilter übereinstimmen
+    private static final String SECRET_KEY = "your-very-secure-secret-key-with-at-least-32-chars";
     private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24 Stunden
     private final Key signingKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserRegistrationDTO registerDTO) {
+        logger.info("registration request: {}", registerDTO);
         User user = userService.register(registerDTO);
         return ResponseEntity.ok(new UserDTO(user.getId(), user.getUsername(), user.getEmail()));
     }
@@ -59,7 +63,8 @@ public class UserController {
     @GetMapping("/validate")
     public ResponseEntity<UserDetailsResponse> validateUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+        if (authentication != null && authentication.isAuthenticated()
+                && !"anonymousUser".equals(authentication.getPrincipal())) {
             String username = authentication.getName();
             String role = userService.getUserRole(username);
             UserDetailsResponse response = new UserDetailsResponse();

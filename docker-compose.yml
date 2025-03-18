@@ -77,25 +77,6 @@ services:
     networks:
       - shop_network
 
-  seed:
-    build:
-      context: ./web_shop_backend/scripts
-      dockerfile: dockerfile
-    command: npm start
-    environment:
-      - DB_USER=${DB_USER}
-      - DB_HOST=${DB_HOST}
-      - DB_NAME=${DB_NAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_PORT=${DB_PORT}
-    depends_on:
-      - postgres
-      - user-service
-      - product-service
-      - order-service
-    networks:
-      - shop_network
-
 networks:
   shop_network:
     driver: bridge
