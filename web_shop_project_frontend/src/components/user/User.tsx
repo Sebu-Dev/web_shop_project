@@ -1,4 +1,3 @@
-import { logout } from '@/api/LoginApi';
 import { useUserSession } from '@/store/UserSessionStore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useLoginPopup } from '@/store/LoginPopupStore';
 
 export const User = () => {
-  const { user } = useUserSession();
+  const { user, logout } = useUserSession();
   const { showLogin } = useLoginPopup();
 
   const handleLogoutClick = () => {

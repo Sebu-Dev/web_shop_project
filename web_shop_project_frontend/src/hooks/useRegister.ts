@@ -2,15 +2,8 @@ import { register } from '@/api/LoginApi';
 import { USE_DUMMY_MODE } from '@/config/config';
 import useCartStore from '@/store/ShoppingCartStore';
 import { useUserSession } from '@/store/UserSessionStore';
-import { LoginResponse, UserType } from '@/types/User';
+import { LoginResponse, RegisterUserInput } from '@/types/User';
 import { useMutation } from '@tanstack/react-query';
-
-const dummyUser: UserType = {
-  id: 12345,
-  adress: 'testadress',
-  username: 'Test User',
-  email: 'testuser@example.com',
-};
 
 export const useRegister = () => {
   const { setUser, setTokens } = useUserSession();
@@ -18,23 +11,21 @@ export const useRegister = () => {
 
   return useMutation({
     mutationFn: USE_DUMMY_MODE
-      ? async (userData: UserType) => {
-          // Dummy-Modus: Verwende userData und fülle fehlende Felder mit dummyUser
+      ? async (userData: RegisterUserInput) => {
           console.log('Simulating registration with:', userData);
           const response: LoginResponse = {
             user: {
-              ...dummyUser,
+              id: Math.floor(Math.random() * 10000) + 1,
               username: userData.username,
-              email: userData.email || dummyUser.email,
-              adress: userData.adress || dummyUser.adress,
-              id: userData.id || dummyUser.id,
+              email: userData.email,
+              adress: userData.adress,
             },
-            accessToken: 'dummy-access-token',
-            refreshToken: 'dummy-refresh-token',
+            accessToken: 'dummy-access-token-' + Date.now(),
+            refreshToken: 'dummy-refresh-token-' + Date.now(),
           };
           return response;
         }
-      : register, // Backend-Modus: Erwartet UserType
+      : register, // Echter API-Call bleibt erhalten
 
     onError: (error) => console.log('Registration failed:', error),
     onSuccess: (data: LoginResponse) => {

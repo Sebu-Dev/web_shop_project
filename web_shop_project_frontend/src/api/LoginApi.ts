@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_USERS } from '@/config/Api';
-import { UserType } from '@/types/User';
+import { RegisterUserInput } from '@/types/User';
 
 // Hilfsfunktion zur Behandlung von Fehlern mit Typisierung
 const handleError = (error: unknown) => {
@@ -110,7 +110,7 @@ export const update = async () => {
 };
 
 // Register-Request für den Benutzer
-export const register = async (userData: UserType) => {
+export const register = async (userData: RegisterUserInput) => {
   try {
     const response = await axios.post(API_USERS.REGISTER_URL, userData, {
       withCredentials: true, // Cookies mit der Anfrage senden

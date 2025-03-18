@@ -1,10 +1,16 @@
 import { login } from '@/api/LoginApi';
 import { USE_DUMMY_MODE } from '@/config/config';
-import { dummyUser } from '@/data/UserDummyData';
 import useCartStore from '@/store/ShoppingCartStore';
 import { useUserSession } from '@/store/UserSessionStore';
 import { LoginResponse } from '@/types/User';
 import { useMutation } from '@tanstack/react-query';
+
+const dummyUser = {
+  id: 12345,
+  adress: 'testadress',
+  username: 'Test User',
+  email: 'testuser@example.com',
+};
 
 export const useLogin = () => {
   const { setUser, setTokens } = useUserSession();
@@ -13,16 +19,18 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: USE_DUMMY_MODE
       ? async (credentials: { username: string; password: string }) => {
-          // Dummy-Modus
           console.log('Simulating login with:', credentials);
           const response: LoginResponse = {
-            user: dummyUser,
-            accessToken: 'dummy-access-token',
-            refreshToken: 'dummy-refresh-token',
+            user: {
+              ...dummyUser,
+              username: credentials.username,
+            },
+            accessToken: 'dummy-access-token-' + Date.now(),
+            refreshToken: 'dummy-refresh-token-' + Date.now(),
           };
           return response;
         }
-      : login, // Backend-Modus: Nutze die echte API, die { username, password } erwartet
+      : login, // Echter API-Call bleibt erhalten
 
     onError: (error) => console.log('Login failed:', error),
     onSuccess: (data: LoginResponse) => {
