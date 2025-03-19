@@ -1,4 +1,4 @@
-import useCartStore from '@/store/ShoppingCartStore';
+import useCartStore from '@/store/useShoppingCartStore';
 import { ProductType } from '@/types/ProductType';
 import { Button } from './ui/button';
 import {

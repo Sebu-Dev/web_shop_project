@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { ProductType } from '@/types/ProductType';
-import { useUserSession } from './UserSessionStore';
+import { useUserSession } from './useUserSessionStore';
 
 interface CartState {
   cart: ProductType[];

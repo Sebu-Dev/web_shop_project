@@ -2,7 +2,7 @@ import { ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ROUTES } from '../../config/Routes';
 import { useNavigate } from 'react-router-dom';
-import useCartStore from '@/store/ShoppingCartStore'; // Zustand importieren
+import useCartStore from '@/store/useShoppingCartStore'; // Zustand importieren
 
 export const ShoppingCartButton = () => {
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import { register } from '@/api/LoginApi';
-import useCartStore from '@/store/ShoppingCartStore';
-import { useUserSession } from '@/store/UserSessionStore';
+import useCartStore from '@/store/useShoppingCartStore';
+import { useUserSession } from '@/store/useUserSessionStore';
 import { UserType } from '@/types/User';
 import { useMutation } from '@tanstack/react-query';
 

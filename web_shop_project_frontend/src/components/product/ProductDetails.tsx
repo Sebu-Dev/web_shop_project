@@ -1,13 +1,13 @@
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { products } from '@/data/ProductDummyData';
-import useCartStore from '@/store/ShoppingCartStore';
+import useCartStore from '@/store/useShoppingCartStore';
 
 function ProductDetails() {
   const { id } = useParams();
   const { addToCart } = useCartStore();
   const [quantity, setQuantity] = useState(1);
+  const { products } = useProductStore();
 
   // Finde das Produkt anhand der ID
   const product = products.find((p) => p.id === id);

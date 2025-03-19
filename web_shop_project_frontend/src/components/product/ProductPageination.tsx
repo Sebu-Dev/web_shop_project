@@ -8,10 +8,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { products } from '@/data/ProductDummyData';
 import { ProductCard } from './ProductCard';
+import { useProductStore } from '@/store/useProductStore';
 
 export function ProductPagination() {
+  const { products } = useProductStore();
   const productsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const maxVisiblePages = 3;

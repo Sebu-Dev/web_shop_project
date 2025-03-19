@@ -1,9 +1,9 @@
-import { useUserSession } from '@/store/UserSessionStore';
+import { useUserSession } from '@/store/useUserSessionStore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { User as UserIcon, LogOut, Edit, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useLoginPopup } from '@/store/LoginPopupStore';
+import { useLoginPopup } from '@/store/useLoginPopupStore';
 
 export const User = () => {
   const { user, logout } = useUserSession();

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
-import { useUserSession } from '@/store/UserSessionStore';
+import { useUserSession } from '@/store/useUserSessionStore';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
 import { Link } from 'react-router-dom';
-import { useLoginPopup } from '@/store/LoginPopupStore';
+import { useLoginPopup } from '@/store/useLoginPopupStore';
 
 export const UserButton = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);

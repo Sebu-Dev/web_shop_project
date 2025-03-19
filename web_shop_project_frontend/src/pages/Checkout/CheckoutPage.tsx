@@ -5,7 +5,7 @@ import {
   CardTitle,
   CardContent,
 } from '../../components/ui/card';
-import useCartStore from '@/store/ShoppingCartStore';
+import useCartStore from '@/store/useShoppingCartStore';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';

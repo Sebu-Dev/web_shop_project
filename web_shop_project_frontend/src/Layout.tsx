@@ -4,7 +4,7 @@ import { Contact } from './components/Contact';
 import { LoginForm } from './components/authentification/LoginForm';
 import { RegistrationForm } from './components/authentification/RegistrationForm';
 import { Popup } from './components/ui-components/Popup';
-import { useLoginPopup } from './store/LoginPopupStore';
+import { useLoginPopup } from './store/useLoginPopupStore';
 
 interface LayoutProps {
   nav?: boolean;

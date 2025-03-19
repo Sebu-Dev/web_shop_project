@@ -1,7 +1,7 @@
-import { useUserSession } from '@/store/UserSessionStore';
+import { useUserSession } from '@/store/useUserSessionStore';
 import { Button } from '../ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
-import { useLoginPopup } from '@/store/LoginPopupStore';
+import { useLoginPopup } from '@/store/useLoginPopupStore';
 import { Input } from '../ui/input';
 import { ChangeEvent, useState } from 'react';
 import { Label } from '../ui/label';

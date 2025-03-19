@@ -1,5 +1,5 @@
 import { updateUserApiCall } from '@/api/LoginApi';
-import { useUserSession } from '@/store/UserSessionStore';
+import { useUserSession } from '@/store/useUserSessionStore';
 import { UserType, UpdateUserType } from '@/types/User';
 import { useMutation } from '@tanstack/react-query';
 
