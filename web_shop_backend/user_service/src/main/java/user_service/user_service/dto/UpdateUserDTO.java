@@ -6,8 +6,8 @@ public class UpdateUserDTO {
     private String address;
     private String username;
     private String email;
-    private String currentPasswordHash;
-    private String newPasswordHash;
+    private String currentPassword;
+    private String newPassword;
 
     public void setId(Long id) {
         this.id = id;
@@ -41,19 +41,19 @@ public class UpdateUserDTO {
         return this.email;
     }
 
-    public void setCurrentPasswordHash(String currentPasswordHash) {
-        this.currentPasswordHash = currentPasswordHash;
+    public void setCurrentPassword(String currentPasswordHash) {
+        this.currentPassword = currentPasswordHash;
     }
 
     public String getCurrentPasswordHash() {
-        return this.currentPasswordHash;
+        return this.currentPassword;
     }
 
     public void setNewPasswordHash(String newPasswordHash) {
-        this.newPasswordHash = newPasswordHash;
+        this.newPassword = newPasswordHash;
     }
 
     public String getNewPasswordHash() {
-        return this.newPasswordHash;
+        return this.newPassword;
     }
 }

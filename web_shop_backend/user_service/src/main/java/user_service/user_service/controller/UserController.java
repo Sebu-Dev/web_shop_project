@@ -50,7 +50,7 @@ public class UserController {
                 .setSubject(user.getUsername())
                 .claim("role", user.getRole())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(signingKey) // Kein SignatureAlgorithm mehr nötig, Key definiert es
+                .signWith(signingKey)
                 .compact();
 
         ResponseCookie cookie = ResponseCookie.from("authToken", token)
