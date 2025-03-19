@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_USERS } from '@/config/Api';
-import { RegisterUserInput } from '@/types/User';
+import { RegisterUserInput, UpdateUserType, UserType } from '@/types/User';
 
 // Hilfsfunktion zur Behandlung von Fehlern mit Typisierung
 const handleError = (error: unknown) => {
@@ -13,15 +13,6 @@ const handleError = (error: unknown) => {
   }
 };
 
-const removeAuthToken = () => {
-  localStorage.removeItem('auth_token');
-};
-
-// Hilfsfunktion zum Speichern des Tokens im LocalStorage
-const saveAuthToken = (token: string) => {
-  localStorage.setItem('auth_token', token);
-};
-
 // Login-Request mit axios
 export const login = async (credentials: {
   username: string;
@@ -32,11 +23,8 @@ export const login = async (credentials: {
       withCredentials: true, // Cookies werden automatisch mitgeschickt
     });
 
-    console.log('Erfolgreich eingeloggt', response.data);
-
-    // JWT-Token aus der Antwort speichern
-    if (response.data.token) {
-      saveAuthToken(response.data.token);
+    if (response.data) {
+      console.log('Erfolgreich eingeloggt', response.data);
       return response.data;
     }
   } catch (error) {
@@ -57,7 +45,6 @@ export const logout = async () => {
 
     if (response.status === 200) {
       // Cookie im Frontend löschen
-      removeAuthToken();
       console.log('Erfolgreich ausgeloggt');
     } else {
       throw new Error('Logout failed');
@@ -75,37 +62,27 @@ export const deleteUser = async () => {
     });
 
     if (response.status === 200) {
-      // Cookie im Frontend löschen
-      removeAuthToken();
       console.log('Benutzer erfolgreich gelöscht');
     } else {
       throw new Error('User deletion failed');
     }
   } catch (error) {
-    handleError(error); // Hier wird der Fehler an handleError weitergegeben
+    handleError(error);
   }
 };
 
-// Update-Request für den Benutzer
-export const update = async () => {
-  try {
-    const response = await axios.put(
-      API_USERS.UPDATE_URL,
-      {},
-      {
-        withCredentials: true, // Cookies mit der Anfrage senden
-      }
-    );
+export const updateUserApiCall = async (
+  newUser: UpdateUserType
+): Promise<UserType> => {
+  const response = await axios.put(API_USERS.UPDATE_URL, newUser, {
+    withCredentials: true,
+  });
 
-    if (response.status === 200) {
-      // Cookie im Frontend löschen
-      removeAuthToken();
-      console.log('Benutzer erfolgreich aktualisiert');
-    } else {
-      throw new Error('Update failed');
-    }
-  } catch (error) {
-    handleError(error); // Hier wird der Fehler an handleError weitergegeben
+  if (response.status === 200 && response.data) {
+    console.log('Benutzer erfolgreich aktualisiert');
+    return response.data;
+  } else {
+    throw new Error('Update failed');
   }
 };
 
@@ -116,14 +93,12 @@ export const register = async (userData: RegisterUserInput) => {
       withCredentials: true, // Cookies mit der Anfrage senden
     });
 
-    console.log('Benutzer erfolgreich registriert', response.data);
+    if (response.data) {
+      console.log('Benutzer erfolgreich registriert', response.data);
 
-    // Optional: Token speichern (falls zurückgegeben)
-    if (response.data.token) {
-      saveAuthToken(response.data.token);
       return response.data;
     }
   } catch (error) {
-    handleError(error); // Hier wird der Fehler an handleError weitergegeben
+    handleError(error);
   }
 };

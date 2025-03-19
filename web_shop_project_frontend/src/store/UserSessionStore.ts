@@ -17,14 +17,18 @@ export const useUserSession = create<SessionState>()(
       user: null,
       accessToken: null,
       refreshToken: null,
+
+      // Setzt den User beim Login vollständig
       setUser: (user: UserType) => set(() => ({ user })),
+
       setTokens: (accessToken: string, refreshToken: string) =>
-        set(() => ({ accessToken, refreshToken })),
+        set(() => ({ accessToken: accessToken, refreshToken: refreshToken })),
+
       logout: () =>
         set(() => ({ user: null, accessToken: null, refreshToken: null })),
     }),
     {
-      name: 'user-session', // Key für localStorage
+      name: 'user-session',
       storage: createJSONStorage(() => localStorage),
     }
   )

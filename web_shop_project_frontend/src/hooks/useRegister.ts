@@ -1,38 +1,21 @@
 import { register } from '@/api/LoginApi';
-import { USE_DUMMY_MODE } from '@/config/config';
 import useCartStore from '@/store/ShoppingCartStore';
 import { useUserSession } from '@/store/UserSessionStore';
-import { LoginResponse, RegisterUserInput } from '@/types/User';
+import { UserType } from '@/types/User';
 import { useMutation } from '@tanstack/react-query';
 
 export const useRegister = () => {
-  const { setUser, setTokens } = useUserSession();
+  const { setUser } = useUserSession();
   const { syncWithUser } = useCartStore();
 
   return useMutation({
-    mutationFn: USE_DUMMY_MODE
-      ? async (userData: RegisterUserInput) => {
-          console.log('Simulating registration with:', userData);
-          const response: LoginResponse = {
-            user: {
-              id: Math.floor(Math.random() * 10000) + 1,
-              username: userData.username,
-              email: userData.email,
-              adress: userData.adress,
-            },
-            accessToken: 'dummy-access-token-' + Date.now(),
-            refreshToken: 'dummy-refresh-token-' + Date.now(),
-          };
-          return response;
-        }
-      : register, // Echter API-Call bleibt erhalten
+    mutationFn: register,
 
     onError: (error) => console.log('Registration failed:', error),
-    onSuccess: (data: LoginResponse) => {
-      setUser(data.user);
-      setTokens(data.accessToken, data.refreshToken);
+    onSuccess: (user: UserType) => {
+      setUser(user);
       syncWithUser();
-      console.log('Registration successful:', data.user);
+      console.log('Registration successful:', user);
     },
   });
 };

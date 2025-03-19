@@ -17,18 +17,18 @@ export function LoginForm({
   onClose,
   ...props
 }: LoginFormProps) {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { mutate } = useLogin();
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const credentials = {
-      username: email,
+      username,
       password,
     };
     mutate(credentials, {
-      onSuccess: () => onClose(), // Close popup on successful login
+      onSuccess: () => onClose(), // Schließt Popup bei erfolgreichem Login
     });
   };
 
@@ -54,21 +54,23 @@ export function LoginForm({
           <h1 className="text-3xl font-semibold text-gray-900">
             Login to Your Account
           </h1>
+          {/* ÄNDERUNG: Text angepasst */}
           <p className="text-sm leading-relaxed text-gray-500">
-            Enter your email and password to access your account
+            Enter your username and password to access your account
           </p>
         </div>
         <div className="grid gap-6">
           <div className="grid gap-2">
-            <Label htmlFor="email" className="font-medium text-gray-700">
-              Email
+            {/* ÄNDERUNG: Label und Input für username statt email */}
+            <Label htmlFor="username" className="font-medium text-gray-700">
+              Username
             </Label>
             <Input
-              value={email}
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              onChange={(e) => setEmail(e.target.value)}
+              value={username}
+              id="username"
+              type="text" // ÄNDERUNG: type="email" zu type="text"
+              placeholder="yourusername"
+              onChange={(e) => setUsername(e.target.value)}
               required
               className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
             />
