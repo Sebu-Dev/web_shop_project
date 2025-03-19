@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import user_service.user_service.dto.UpdateUserDTO;
 import user_service.user_service.dto.UserRegistrationDTO;
 import user_service.user_service.entity.User;
 import user_service.user_service.repository.UserRepository;
@@ -21,7 +22,7 @@ public class UserService {
     public User register(UserRegistrationDTO registrationDTO) {
         User user = new User();
         user.setUsername(registrationDTO.getUsername());
-        user.setPasswordHash(passwordEncoder.encode(registrationDTO.getPassword()));
+        user.setPasswordHash(registrationDTO.getPassword());
         user.setEmail(registrationDTO.getEmail());
         user.setAddress(registrationDTO.getAddress());
         user.setRole(registrationDTO.getRole());
@@ -53,25 +54,28 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public User updateUser(Long userId, UserRegistrationDTO updateDTO) {
-        User user = getUserById(userId);
-        if (updateDTO.getUsername() != null && !updateDTO.getUsername().isEmpty()) {
-            user.setUsername(updateDTO.getUsername());
-        }
-        if (updateDTO.getPassword() != null && !updateDTO.getPassword().isEmpty()) {
-            user.setPasswordHash(passwordEncoder.encode(updateDTO.getPassword()));
-        }
-        if (updateDTO.getEmail() != null && !updateDTO.getEmail().isEmpty()) {
-            user.setEmail(updateDTO.getEmail());
-        }
-        if (updateDTO.getAddress() != null && !updateDTO.getAddress().isEmpty()) {
-            user.setAddress(updateDTO.getAddress());
-        }
-        if (updateDTO.getRole() != null && !updateDTO.getRole().isEmpty()) {
-            user.setRole(updateDTO.getRole());
-        }
-        return userRepository.save(user);
-    }
+    /*
+     * public User updateUser(Long userId, UpdateUserDTO updateDTO) {
+     * User user = getUserById(userId);
+     * if (updateDTO.getUsername() != null && !updateDTO.getUsername().isEmpty()) {
+     * user.setUsername(updateDTO.getUsername());
+     * }
+     * if (updateDTO.getcurrentPasswordHash() != null &&
+     * !updateDTO.getPasswordHash().isEmpty()) {
+     * user.setPasswordHash(passwordEncoder.encode(updateDTO.getPasswordHash()));
+     * }
+     * if (updateDTO.getEmail() != null && !updateDTO.getEmail().isEmpty()) {
+     * user.setEmail(updateDTO.getEmail());
+     * }
+     * if (updateDTO.getAddress() != null && !updateDTO.getAddress().isEmpty()) {
+     * user.setAddress(updateDTO.getAddress());
+     * }
+     * if (updateDTO.getRole() != null && !updateDTO.getRole().isEmpty()) {
+     * user.setRole(updateDTO.getRole());
+     * }
+     * return userRepository.save(user);
+     * }
+     */
 
     public User authenticate(String username, String password) {
         User user = userRepository.findByUsername(username)
