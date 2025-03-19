@@ -17,7 +17,7 @@ export function RegistrationForm({
   onClose,
   ...props
 }: RegistrationFormProps) {
-  const [userName, setUserName] = useState('');
+  const [username, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -32,10 +32,10 @@ export function RegistrationForm({
     }
 
     const user = {
-      username: userName,
+      username,
       email,
       password,
-      adress: address, // Keep consistent with UserType
+      address,
     };
 
     mutate(user, {
@@ -76,7 +76,7 @@ export function RegistrationForm({
               Username
             </Label>
             <Input
-              value={userName}
+              value={username}
               onChange={(e) => setUserName(e.target.value)}
               id="username"
               type="text"
