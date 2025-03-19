@@ -13,12 +13,7 @@ export interface RegisterUserInput {
   address: string;
 }
 
-export interface LoginResponse {
-  user: UserType;
-  accessToken: string;
-  refreshToken: string;
-}
-
 export interface UpdateUserType extends UserType {
-  password?: string;
+  currentPassword?: string;
+  newPassword?: string;
 }

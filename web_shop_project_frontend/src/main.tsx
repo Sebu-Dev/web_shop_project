@@ -11,10 +11,12 @@ import { Layout } from './Layout.tsx';
 import { ShoppingCart } from './components/ShoppingCart.tsx';
 import ProductDetails from './components/product/ProductDetails.tsx';
 import { ProductPagination } from './components/product/ProductPageination.tsx';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 import { ROUTES } from './config/Routes.ts';
 import CheckoutSuccess from './pages/Checkout/CheckoutSuccess.tsx';
 import CheckoutPage from './pages/Checkout/CheckoutPage.tsx';
+import { EditUserProfile } from './components/user/EditUserProfile.tsx';
 
 const queryClient = new QueryClient();
 
@@ -61,7 +63,7 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTES.USER_EDIT,
-        element: <div>Edit Profile (TBD)</div>,
+        element: <EditUserProfile></EditUserProfile>,
       },
       {
         path: ROUTES.USER_ORDERS,
