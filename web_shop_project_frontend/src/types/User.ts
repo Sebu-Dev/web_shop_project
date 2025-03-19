@@ -4,6 +4,7 @@ export interface UserType {
   username: string;
   email: string;
   address: string;
+  role: 'USER' | 'ADMIN';
 }
 
 export interface RegisterUserInput {

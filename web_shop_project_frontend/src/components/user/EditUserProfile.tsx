@@ -12,7 +12,6 @@ import { useUpdateUser } from '@/hooks/useUpdateUser';
 import { Skeleton } from '../ui/skeleton';
 
 export const EditUserProfile = () => {
-  // ÄNDERUNG: isPending statt isLoading verwenden
   const { mutate: updateUser, isPending } = useUpdateUser();
   const { user } = useUserSession();
   const { showLogin } = useLoginPopup();
@@ -81,6 +80,7 @@ export const EditUserProfile = () => {
         newPassword: formData.newPassword !== '' ? formData.newPassword : '',
         currentPassword:
           formData.currentPassword !== '' ? formData.currentPassword : '',
+        role: 'USER',
       };
 
       updateUser(updatedUser);

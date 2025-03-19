@@ -36,6 +36,7 @@ export function RegistrationForm({
       email,
       password,
       address,
+      role: 'USER',
     };
 
     mutate(user, {
