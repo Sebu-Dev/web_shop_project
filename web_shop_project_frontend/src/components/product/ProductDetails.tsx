@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import useCartStore from '@/store/useShoppingCartStore';
+import { useProductStore } from '@/store/useProductStore';
 
 function ProductDetails() {
   const { id } = useParams();
