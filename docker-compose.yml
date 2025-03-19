@@ -85,6 +85,8 @@ services:
       - user-service
       - product-service
       - order-service
+    networks:
+      - shop_network
 
 networks:
   shop_network:
