@@ -82,9 +82,9 @@ services:
     ports:
       - "5173:80"
     depends_on:
-      - user_service
-      - product_service
-      - order_service
+      - user-service
+      - product-service
+      - order-service
 
 networks:
   shop_network:

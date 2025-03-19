@@ -19,6 +19,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.security.Key;
 import java.util.Date;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/users")
@@ -29,7 +33,7 @@ public class UserController {
     private UserService userService;
 
     private static final String SECRET_KEY = "your-very-secure-secret-key-with-at-least-32-chars";
-    private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24 Stunden
+    private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000;
     private final Key signingKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
     @PostMapping("/register")
@@ -77,4 +81,24 @@ public class UserController {
         response.setValid(false);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+    /*
+     * @PutMapping("/{id}")
+     * public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody
+     * User user) {
+     * return ResponseEntity.ok;
+     * }
+     */
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok().build();
+    }
+
 }
