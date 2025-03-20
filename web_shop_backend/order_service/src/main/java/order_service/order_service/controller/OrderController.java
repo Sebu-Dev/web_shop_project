@@ -1,5 +1,6 @@
 package order_service.order_service.controller;
 
+import order_service.order_service.dto.OrderDetailsDTO;
 import order_service.order_service.entity.Order;
 import order_service.order_service.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,12 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
+    }
+
+    @GetMapping("/{id}/details")
+    public ResponseEntity<OrderDetailsDTO> getOrderDetails(@PathVariable Long id) {
+        OrderDetailsDTO orderDetails = orderService.getOrderDetails(id);
+        return ResponseEntity.ok(orderDetails);
     }
 
     @GetMapping("/user/{userId}")

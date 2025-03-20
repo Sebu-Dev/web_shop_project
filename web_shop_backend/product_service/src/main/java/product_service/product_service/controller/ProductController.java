@@ -5,7 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import product_service.product_service.dto.ProductDetailsDTO;
 import product_service.product_service.entity.Product;
+import product_service.product_service.repository.ProductRepository;
 import product_service.product_service.service.ProductService;
 
 import java.util.List;
@@ -16,6 +19,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
@@ -48,5 +54,19 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/details")
+    public ResponseEntity<ProductDetailsDTO> getProductDetailsById(@PathVariable Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        ProductDetailsDTO dto = new ProductDetailsDTO();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setImage(product.getImage());
+        dto.setPrice(product.getPrice());
+        dto.setOnSale(product.isOnSale());
+        dto.setDescription(product.getDescription());
+        return ResponseEntity.ok(dto);
     }
 }
