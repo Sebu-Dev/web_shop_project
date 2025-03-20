@@ -34,8 +34,12 @@ public class OrderService {
         return ordersWithDetails;
     }
 
-    public List<Order> getOrdersByUserId(Long userId) {
-        return orderRepository.findByUserId(userId).stream().collect(Collectors.toList());
+    public List<OrderDetailsDTO> getOrdersByUserId(Long userId) {
+        List<Order> orders = orderRepository.findByUserId(userId).stream().collect(Collectors.toList());
+        List<OrderDetailsDTO> ordersWithDetails = orders.stream()
+                .map(order -> getOrderDetails(order.getId()))
+                .collect(Collectors.toList());
+        return ordersWithDetails;
     }
 
     public Order getOrderById(Long id) {
