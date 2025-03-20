@@ -14,9 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import jakarta.transaction.Transactional;
-import order_service.order_service.entity.Order;
-import order_service.order_service.entity.OrderItem;
-import order_service.order_service.repository.OrderRepository;
 
 @Service
 public class OrderService {
@@ -29,8 +26,12 @@ public class OrderService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll().stream().collect(Collectors.toList());
+    public List<OrderDetailsDTO> getAllOrders() {
+        List<Order> orders = orderRepository.findAll().stream().collect(Collectors.toList());
+        List<OrderDetailsDTO> ordersWithDetails = orders.stream()
+                .map(order -> getOrderDetails(order.getId()))
+                .collect(Collectors.toList());
+        return ordersWithDetails;
     }
 
     public List<Order> getOrdersByUserId(Long userId) {
