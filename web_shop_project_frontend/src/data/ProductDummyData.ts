@@ -1,10 +1,9 @@
 import { ProductType } from '@/types/ProductType';
-import { v4 as uuidv4 } from 'uuid';
 
 export const dummyProducts: ProductType[] = Array.from(
-  { length: 2000 },
+  { length: 1 },
   (_, i) => ({
-    id: uuidv4(),
+    id: 1,
     name: `Produkt ${i + 1}`,
     description: 'HIER KÖNNTE IHRE WERBUNG STEHEN',
     image:

@@ -11,7 +11,7 @@ export const useGetProducts = () => {
     queryKey: ['products'],
     queryFn: async () => {
       try {
-        // Künstliche Verzögerung von 3 Sekunden zum Testen des Ladezustands
+        // Künstliche Verzögerung von 1 Sekunden zum Testen des Ladezustands
         await new Promise((resolve) => setTimeout(resolve, 1000));
         const products = await getProducts();
         setProducts(products);
