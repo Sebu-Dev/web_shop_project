@@ -16,7 +16,7 @@ const handleError = (error: unknown) => {
 const getUserId = (): number => {
   const user = useUserSession.getState().user;
   if (user === null) {
-    throw 'user not logged in';
+    throw new Error('User not logged in');
   }
   return user.id;
 };
