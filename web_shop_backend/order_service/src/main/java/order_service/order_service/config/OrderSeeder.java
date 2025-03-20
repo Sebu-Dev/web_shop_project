@@ -1,76 +1,92 @@
 package order_service.order_service.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import order_service.order_service.entity.Order;
 import order_service.order_service.entity.OrderItem;
 import order_service.order_service.repository.OrderRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-@Configuration
-public class OrderSeeder {
+@Component
+public class OrderSeeder implements CommandLineRunner {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrderSeeder.class);
+    @Autowired
+    private OrderRepository orderRepository;
 
-    @Bean
-    public CommandLineRunner seedOrders(OrderRepository orderRepository) {
-        return args -> {
-            logger.info("Starte Order-Seeding...");
+    @Override
+    public void run(String... args) throws Exception {
+        // Erstelle Beispiel-Bestellungen
+        List<Order> orders = new ArrayList<>();
 
-            // Annahme: User- und Produkt-IDs aus user-service und product-service
-            Long user1Id = 2L; // user1
-            Long user2Id = 3L; // user2
-            Long laptopId = 1L;
-            Long smartphoneId = 2L;
-            Long headphonesId = 3L;
+        // Bestellung 1
+        Order order1 = new Order();
+        order1.setUserId(1L);
+        order1.setDate(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        order1.setMwstRate(0.19); // 19% MwSt
+        order1.setShippingCosts(5.99); // Versandkosten
 
-            // Bestellung 1: User1 (Laptop + Smartphone)
-            if (orderRepository.findByUserId(user1Id).isEmpty()) {
-                Order order1 = new Order();
-                order1.setUserId(user1Id);
+        List<OrderItem> order1Items = new ArrayList<>();
+        OrderItem item1 = new OrderItem();
+        item1.setOrder(order1);
+        item1.setProductId(1L); // Laptop
+        item1.setQuantity(2);
+        item1.setPrice(999.99); // Preis aus ProductSeeder
+        order1Items.add(item1);
 
-                OrderItem item1 = new OrderItem();
-                item1.setOrder(order1);
-                item1.setProductId(laptopId);
-                item1.setQuantity(1);
-                item1.setPrice(999.99);
+        OrderItem item2 = new OrderItem();
+        item2.setOrder(order1);
+        item2.setProductId(2L); // Smartphone
+        item2.setQuantity(1);
+        item2.setPrice(499.99); // Preis aus ProductSeeder
+        order1Items.add(item2);
 
-                OrderItem item2 = new OrderItem();
-                item2.setOrder(order1);
-                item2.setProductId(smartphoneId);
-                item2.setQuantity(1);
-                item2.setPrice(599.99);
+        order1.setItems(order1Items);
+        calculateOrderTotals(order1);
+        orders.add(order1);
 
-                order1.setItems(Arrays.asList(item1, item2));
-                orderRepository.save(order1);
-                logger.info("Bestellung für User {} erstellt mit ID: {}", user1Id, order1.getId());
-            } else {
-                logger.info("Bestellung für User {} existiert bereits", user1Id);
-            }
+        // Bestellung 2
+        Order order2 = new Order();
+        order2.setUserId(2L);
+        order2.setDate(LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        order2.setMwstRate(0.19);
+        order2.setShippingCosts(3.99);
 
-            // Bestellung 2: User2 (Headphones)
-            if (orderRepository.findByUserId(user2Id).isEmpty()) {
-                Order order2 = new Order();
-                order2.setUserId(user2Id);
+        List<OrderItem> order2Items = new ArrayList<>();
+        OrderItem item3 = new OrderItem();
+        item3.setOrder(order2);
+        item3.setProductId(3L); // Headphones
+        item3.setQuantity(3);
+        item3.setPrice(59.99); // Preis aus ProductSeeder
+        order2Items.add(item3);
 
-                OrderItem item3 = new OrderItem();
-                item3.setOrder(order2);
-                item3.setProductId(headphonesId);
-                item3.setQuantity(1);
-                item3.setPrice(199.99);
+        order2.setItems(order2Items);
+        calculateOrderTotals(order2);
+        orders.add(order2);
 
-                order2.setItems(Arrays.asList(item3));
-                orderRepository.save(order2);
-                logger.info("Bestellung für User {} erstellt mit ID: {}", user2Id, order2.getId());
-            } else {
-                logger.info("Bestellung für User {} existiert bereits", user2Id);
-            }
+        // Speichere die Bestellungen
+        orderRepository.saveAll(orders);
+        System.out.println("Order-Seeding abgeschlossen.");
+    }
 
-            logger.info("Order-Seeding abgeschlossen");
-        };
+    // Hilfsmethode zur Berechnung der Preise
+    private void calculateOrderTotals(Order order) {
+        double subTotalBrutto = 0.0;
+        for (OrderItem item : order.getItems()) {
+            subTotalBrutto += item.getQuantity() * item.getPrice();
+        }
+        order.setSubTotalBrutto(subTotalBrutto);
+
+        double mwstAmount = subTotalBrutto * order.getMwstRate();
+        order.setMwstAmount(mwstAmount);
+
+        double totalWithShipping = subTotalBrutto + mwstAmount + order.getShippingCosts();
+        order.setTotalWithShipping(totalWithShipping);
+
+        order.setPrice(subTotalBrutto); // "price" als subTotalBrutto
     }
 }

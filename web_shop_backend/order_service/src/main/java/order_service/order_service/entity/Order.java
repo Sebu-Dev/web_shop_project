@@ -1,8 +1,6 @@
 package order_service.order_service.entity;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,20 +12,28 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Column(name = "date", nullable = false)
     private String date;
 
+    @Column(name = "price", nullable = false)
     private double price;
 
+    @Column(name = "sub_total_brutto", nullable = false)
     private double subTotalBrutto;
 
+    @Column(name = "mwst_rate", nullable = false)
     private double mwstRate;
 
+    @Column(name = "mwst_amount", nullable = false)
     private double mwstAmount;
 
+    @Column(name = "shipping_costs", nullable = false)
     private double shippingCosts;
 
+    @Column(name = "total_with_shipping", nullable = false)
     private double totalWithShipping;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
