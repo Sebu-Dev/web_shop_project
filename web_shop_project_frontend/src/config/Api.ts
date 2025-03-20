@@ -8,9 +8,9 @@ export const API_USERS = {
   ORDER: 'http://localhost:8003/api/orders', // Separat, gehört nicht zu UserController
 };
 export const API_PRODUCTS = {
-  BASE_URL: 'http://localhost:8080/api/products',
-  DELETE_URL: 'http://localhost:8080/api/products',
+  BASE_URL: 'http://localhost:8002/api/products',
+  DELETE_URL: 'http://localhost:8002/api/products',
   GET_PAGINATION:
-    'http://localhost:8080/api/products/pagination/?page=0&size=10',
-  UPDATE_URL: 'http://localhost:8080/api/products',
+    'http://localhost:8002/api/products/pagination/?page=0&size=10',
+  UPDATE_URL: 'http://localhost:8002/api/products',
 };
