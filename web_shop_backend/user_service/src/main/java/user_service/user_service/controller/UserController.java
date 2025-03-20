@@ -2,6 +2,7 @@ package user_service.user_service.controller;
 
 import user_service.user_service.config.UserDetailsResponse;
 import user_service.user_service.dto.LoginRequest;
+import user_service.user_service.dto.UpdateUserDTO;
 import user_service.user_service.dto.UserDTO;
 import user_service.user_service.dto.UserRegistrationDTO;
 import user_service.user_service.entity.User;
@@ -87,13 +88,10 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    /*
-     * @PutMapping("/{id}")
-     * public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody
-     * User user) {
-     * return ResponseEntity.ok;
-     * }
-     */
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO user) {
+        return ResponseEntity.ok(userService.updateUser(id, user));
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {

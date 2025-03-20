@@ -1,7 +1,5 @@
 package order_service.order_service.service;
 
-import order_service.order_service.dto.OrderDTO;
-import order_service.order_service.dto.OrderItemDTO;
 import order_service.order_service.entity.Order;
 import order_service.order_service.entity.OrderItem;
 import order_service.order_service.repository.OrderRepository;
@@ -17,27 +15,26 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public List<OrderDTO> getAllOrders() {
-        return orderRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll().stream().collect(Collectors.toList());
     }
 
-    public List<OrderDTO> getOrdersByUserId(Long userId) {
-        return orderRepository.findByUserId(userId).stream().map(this::toDTO).collect(Collectors.toList());
+    public List<Order> getOrdersByUserId(Long userId) {
+        return orderRepository.findByUserId(userId).stream().collect(Collectors.toList());
     }
 
-    public OrderDTO getOrderById(Long id) {
+    public Order getOrderById(Long id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
-        return toDTO(order);
+        return order;
     }
 
-    public OrderDTO createOrder(OrderDTO orderDTO) {
-        Order order = fromDTO(orderDTO);
+    public Order createOrder(Order order) {
         Order savedOrder = orderRepository.save(order);
-        return toDTO(savedOrder);
+        return savedOrder;
     }
 
-    public OrderDTO updateOrder(Long id, OrderDTO orderDTO) {
+    public Order updateOrder(Long id, Order orderDTO) {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
         existingOrder.setUserId(orderDTO.getUserId());
@@ -50,7 +47,7 @@ public class OrderService {
             existingOrder.getItems().add(item);
         });
         Order updatedOrder = orderRepository.save(existingOrder);
-        return toDTO(updatedOrder);
+        return updatedOrder;
     }
 
     public void deleteOrder(Long id) {
@@ -59,33 +56,4 @@ public class OrderService {
         orderRepository.delete(order);
     }
 
-    private OrderDTO toDTO(Order order) {
-        OrderDTO dto = new OrderDTO();
-        dto.setId(order.getId());
-        dto.setUserId(order.getUserId());
-        dto.setItems(order.getItems().stream().map(item -> {
-            OrderItemDTO itemDTO = new OrderItemDTO();
-            itemDTO.setId(item.getId());
-            itemDTO.setProductId(item.getProductId());
-            itemDTO.setQuantity(item.getQuantity());
-            return itemDTO;
-        }).collect(Collectors.toList()));
-        return dto;
-    }
-
-    private Order fromDTO(OrderDTO dto) {
-        Order order = new Order();
-        order.setId(dto.getId());
-        order.setUserId(dto.getUserId());
-        if (dto.getItems() != null) {
-            dto.getItems().forEach(itemDTO -> {
-                OrderItem item = new OrderItem();
-                item.setOrder(order);
-                item.setProductId(itemDTO.getProductId());
-                item.setQuantity(itemDTO.getQuantity());
-                order.getItems().add(item);
-            });
-        }
-        return order;
-    }
 }
