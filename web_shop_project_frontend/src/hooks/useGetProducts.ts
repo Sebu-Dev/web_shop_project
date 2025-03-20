@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getProducts } from '../api/ProductApi';
 import { useProductStore } from '../store/useProductStore';
 import { ProductType } from '../types/ProductType';
+import { dummyProducts } from '@/data/ProductDummyData';
 
 export const useGetProducts = () => {
   const { setProducts } = useProductStore();
@@ -19,6 +20,8 @@ export const useGetProducts = () => {
         throw error;
       }
     },
+    initialData: dummyProducts,
+    initialDataUpdatedAt: 0,
   });
 
   return query;

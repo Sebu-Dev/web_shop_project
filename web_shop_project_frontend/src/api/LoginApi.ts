@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { API_USERS } from '@/config/Api';
 import { RegisterUserInput, UpdateUserType, UserType } from '@/types/User';
+import { useUserSession } from '@/store/useUserSessionStore';
 
 // Hilfsfunktion zur Behandlung von Fehlern mit Typisierung
 const handleError = (error: unknown) => {
@@ -12,7 +13,13 @@ const handleError = (error: unknown) => {
     console.error('Unbekannter Fehler:', error);
   }
 };
-
+const getUserId = (): number => {
+  const user = useUserSession.getState().user;
+  if (user === null) {
+    throw 'user not logged in';
+  }
+  return user.id;
+};
 // Login-Request mit axios
 export const login = async (credentials: {
   username: string;
@@ -32,34 +39,15 @@ export const login = async (credentials: {
   }
 };
 
-// Logout-Request mit axios
-export const logout = async () => {
+// Delete-Request für den Benutzer
+export const deleteUser = async () => {
   try {
-    const response = await axios.post(
-      API_USERS.LOGOUT_URL,
-      {},
+    const response = await axios.delete(
+      API_USERS.DELETE_URL + '/' + getUserId(),
       {
         withCredentials: true, // Cookies mit der Anfrage senden
       }
     );
-
-    if (response.status === 200) {
-      // Cookie im Frontend löschen
-      console.log('Erfolgreich ausgeloggt');
-    } else {
-      throw new Error('Logout failed');
-    }
-  } catch (error) {
-    handleError(error); // Hier wird der Fehler an handleError weitergegeben
-  }
-};
-
-// Delete-Request für den Benutzer
-export const deleteUser = async () => {
-  try {
-    const response = await axios.delete(API_USERS.DELETE_URL, {
-      withCredentials: true, // Cookies mit der Anfrage senden
-    });
 
     if (response.status === 200) {
       console.log('Benutzer erfolgreich gelöscht');
@@ -74,9 +62,13 @@ export const deleteUser = async () => {
 export const updateUserApiCall = async (
   newUser: UpdateUserType
 ): Promise<UserType> => {
-  const response = await axios.put(API_USERS.UPDATE_URL, newUser, {
-    withCredentials: true,
-  });
+  const response = await axios.put(
+    API_USERS.UPDATE_URL + '/' + getUserId(),
+    newUser,
+    {
+      withCredentials: true,
+    }
+  );
 
   if (response.status === 200 && response.data) {
     console.log('Benutzer erfolgreich aktualisiert');

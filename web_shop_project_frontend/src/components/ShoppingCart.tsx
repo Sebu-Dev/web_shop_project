@@ -1,5 +1,4 @@
 import useCartStore from '@/store/useShoppingCartStore';
-import { ProductType } from '@/types/ProductType';
 import { Button } from './ui/button';
 import {
   Card,
@@ -10,21 +9,19 @@ import {
 } from './ui/card';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/config/Routes';
+import { calculateOrder } from '@/utils/OrderCalculator';
 
 export const ShoppingCart: React.FC = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCartStore();
   const navigate = useNavigate();
 
+  // Zentrale Berechnungen mit calculateOrder
+  const { subtotalBrutto, mwstAmount, totalWithShipping } =
+    calculateOrder(cart);
+
   const handleCheckout = () => {
     navigate(ROUTES.CHECKOUT);
   };
-
-  // Berechne den Gesamtpreis
-  const totalPrice = cart.reduce((sum: number, item: ProductType) => {
-    // Wenn quantity nicht definiert, setze sie auf 1
-    const quantity = item.quantity || 1;
-    return sum + item.price * quantity;
-  }, 0);
 
   return (
     <div className="container mx-auto p-4">
@@ -73,7 +70,9 @@ export const ShoppingCart: React.FC = () => {
                         onClick={() =>
                           updateQuantity(item.id, (item.quantity || 0) + 1)
                         }
-                      ></Button>
+                      >
+                        +
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -84,19 +83,22 @@ export const ShoppingCart: React.FC = () => {
                   >
                     Entfernen
                   </Button>
-                  <Button variant="default" onClick={handleCheckout}>
-                    Abschließen
-                  </Button>
                 </CardFooter>
               </div>
             </Card>
           ))}
 
-          {/* Gesamtpreis und Warenkorb leeren */}
           <div className="mt-6 flex items-center justify-between">
-            <p className="text-xl font-semibold">
-              Gesamt: {totalPrice.toFixed(2)} €
-            </p>
+            <div className="text-left">
+              <p className="text-sm">
+                Zwischensumme: {subtotalBrutto.toFixed(2)} €
+              </p>
+              <p className="text-sm">MwSt. (19%): {mwstAmount.toFixed(2)} €</p>
+              <p className="text-sm">Versandkosten: 5.99 €</p>
+              <p className="text-xl font-semibold">
+                Gesamt: {totalWithShipping.toFixed(2)} €
+              </p>
+            </div>
             <Button
               variant="outline"
               className="border-red-500 text-red-500 hover:bg-red-50"
@@ -105,6 +107,9 @@ export const ShoppingCart: React.FC = () => {
               Warenkorb leeren
             </Button>
           </div>
+          <Button variant="default" onClick={handleCheckout}>
+            Zur Kasse
+          </Button>
         </div>
       )}
     </div>
