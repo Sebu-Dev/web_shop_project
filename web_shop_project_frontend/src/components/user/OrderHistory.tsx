@@ -14,12 +14,13 @@ const testUser = {
 // Beispiel-Testdaten für Orders (angepasst an den neuen Order-Typ)
 const testOrders: Order[] = [
   {
+    id: 0,
     userId: 1,
-    id: 'order1',
+    orderNumber: 'order1',
     date: '2025-03-01T10:00:00Z',
     items: [
       {
-        id: 'p1',
+        id: 1,
         name: 'Laptop',
         image: 'https://via.placeholder.com/150',
         price: 999.99,
@@ -27,7 +28,7 @@ const testOrders: Order[] = [
         quantity: 1,
       },
       {
-        id: 'p2',
+        id: 1,
         name: 'Maus',
         image: 'https://via.placeholder.com/150',
         price: 29.99,
@@ -81,7 +82,7 @@ export const OrderHistory = () => {
         <div className="space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
             {orders.map((order) => (
-              <Card key={order.id} className="flex flex-col">
+              <Card key={order.orderNumber} className="flex flex-col">
                 <CardHeader>
                   <CardTitle className="text-lg">
                     Bestellung vom{' '}

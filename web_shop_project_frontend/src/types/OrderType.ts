@@ -2,7 +2,8 @@
 import { ProductType } from '@/types/ProductType';
 
 export interface Order {
-  id: string; // Eindeutige Bestell-ID
+  id: number | null;
+  orderNumber: string; // Eindeutige Bestell-ID
   date: string; // ISO-Datum (z. B. "2023-10-20T12:00:00Z")
   items: ProductType[]; // Produkte im Warenkorb
   subtotalBrutto: number; // Zwischensumme brutto (ohne Versand)

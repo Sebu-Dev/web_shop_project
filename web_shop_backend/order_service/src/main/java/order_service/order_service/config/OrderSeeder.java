@@ -1,16 +1,17 @@
 package order_service.order_service.config;
 
-import order_service.order_service.entity.Order;
-import order_service.order_service.entity.OrderItem;
-import order_service.order_service.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+import order_service.order_service.entity.Order;
+import order_service.order_service.entity.OrderItem;
+import order_service.order_service.repository.OrderRepository;
 
 @Component
 public class OrderSeeder implements CommandLineRunner {
@@ -29,7 +30,7 @@ public class OrderSeeder implements CommandLineRunner {
         order1.setDate(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         order1.setMwstRate(0.19); // 19% MwSt
         order1.setShippingCosts(5.99); // Versandkosten
-
+        order1.setOrderNumber("order_1742474703914");
         List<OrderItem> order1Items = new ArrayList<>();
         OrderItem item1 = new OrderItem();
         item1.setOrder(order1);
@@ -55,6 +56,7 @@ public class OrderSeeder implements CommandLineRunner {
         order2.setDate(LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         order2.setMwstRate(0.19);
         order2.setShippingCosts(3.99);
+        order2.setOrderNumber("order_1742474703414");
 
         List<OrderItem> order2Items = new ArrayList<>();
         OrderItem item3 = new OrderItem();
