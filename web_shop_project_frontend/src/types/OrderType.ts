@@ -10,5 +10,5 @@ export interface Order {
   mwstAmount: number; // MwSt.-Betrag
   shippingCosts: number; // Versandkosten
   totalWithShipping: number; // Gesamtbetrag inkl. Versand
-  userId?: string; // Optional: Benutzer-ID für Backend-Integration
+  userId: number; // Optional: Benutzer-ID für Backend-Integration
 }

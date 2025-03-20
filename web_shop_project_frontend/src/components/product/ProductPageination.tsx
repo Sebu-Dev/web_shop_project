@@ -9,10 +9,10 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import { ProductCard } from './ProductCard';
-import { useProductStore } from '@/store/useProductStore';
+import { useGetProducts } from '@/hooks/useGetProducts';
 
 export function ProductPagination() {
-  const { products } = useProductStore();
+  const { data: products } = useGetProducts();
   const productsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const maxVisiblePages = 3;
@@ -23,6 +23,7 @@ export function ProductPagination() {
     startIndex,
     startIndex + productsPerPage
   );
+
   const getVisiblePages = () => {
     // Falls die Gesamtzahl der Seiten kleiner oder gleich der maximal sichtbaren Seiten ist,
     // werden einfach alle Seiten angezeigt.

@@ -14,6 +14,7 @@ const testUser = {
 // Beispiel-Testdaten für Orders (angepasst an den neuen Order-Typ)
 const testOrders: Order[] = [
   {
+    userId: 1,
     id: 'order1',
     date: '2025-03-01T10:00:00Z',
     items: [

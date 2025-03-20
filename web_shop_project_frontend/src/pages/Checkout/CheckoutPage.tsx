@@ -12,32 +12,25 @@ import { Loader2 } from 'lucide-react';
 import { generateInvoicePDF } from '@/utils/generateInvoicePDF';
 import { ProductType } from '@/types/ProductType';
 import { Order } from '@/types/OrderType';
+import { calculateOrder } from '@/utils/OrderCalculator';
+import { useUserSession } from '@/store/useUserSessionStore';
 
 const CheckoutPage: React.FC = () => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { cart, clearCart } = useCartStore();
+  const { user } = useUserSession();
   const navigate = useNavigate();
 
-  const shippingCosts = 5.99; // Feste Versandkosten
-  const mwstRate = 0.19; // 19% MwSt.
-
-  // Memoized Berechnungen
-  const calculations = useMemo(() => {
-    const subtotalBrutto = cart.reduce((sum, item) => {
-      const quantity = item.quantity || 1;
-      return sum + item.price * quantity;
-    }, 0);
-    const subtotalNetto = subtotalBrutto / (1 + mwstRate);
-    const mwstAmount = subtotalBrutto - subtotalNetto;
-    const totalWithShipping = subtotalBrutto + shippingCosts;
-
-    return { subtotalBrutto, subtotalNetto, mwstAmount, totalWithShipping };
-  }, [cart]);
+  // Memoized Berechnungen mit calculateOrder
+  const calculations = useMemo(() => calculateOrder(cart), [cart]);
 
   // Checkout handler
   const handleCheckout = useCallback(async () => {
+    if (user === null) {
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -45,13 +38,14 @@ const CheckoutPage: React.FC = () => {
 
       const orderDate = new Date().toISOString();
       const order: Order = {
+        userId: user.id,
         id: `order_${Date.now()}`, // Temporäre ID
         date: orderDate,
         items: cart.map((item) => ({ ...item, quantity: item.quantity || 1 })),
         subtotalBrutto: calculations.subtotalBrutto,
-        mwstRate,
+        mwstRate: 0.19, // Standardwert
         mwstAmount: calculations.mwstAmount,
-        shippingCosts,
+        shippingCosts: 5.99, // Standardwert
         totalWithShipping: calculations.totalWithShipping,
       };
 
@@ -134,9 +128,7 @@ const CheckoutPage: React.FC = () => {
             <p className="text-sm">
               MwSt. (19%): {calculations.mwstAmount.toFixed(2)} €
             </p>
-            <p className="text-sm">
-              Versandkosten: {shippingCosts.toFixed(2)} €
-            </p>
+            <p className="text-sm">Versandkosten: 5.99 €</p>
             <p className="text-xl font-semibold">
               Gesamt: {calculations.totalWithShipping.toFixed(2)} €
             </p>

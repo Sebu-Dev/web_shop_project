@@ -9,22 +9,15 @@ import {
 } from './ui/card';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/config/Routes';
+import { calculateOrder } from '@/utils/OrderCalculator';
 
 export const ShoppingCart: React.FC = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCartStore();
   const navigate = useNavigate();
 
-  const shippingCosts = 5.99; // Feste Versandkosten
-  const mwstRate = 0.19; // 19% MwSt.
-
-  // Berechnungen
-  const subtotalBrutto = cart.reduce((sum, item) => {
-    const quantity = item.quantity || 1;
-    return sum + item.price * quantity;
-  }, 0);
-  const subtotalNetto = subtotalBrutto / (1 + mwstRate);
-  const mwstAmount = subtotalBrutto - subtotalNetto;
-  const totalWithShipping = subtotalBrutto + shippingCosts;
+  // Zentrale Berechnungen mit calculateOrder
+  const { subtotalBrutto, mwstAmount, totalWithShipping } =
+    calculateOrder(cart);
 
   const handleCheckout = () => {
     navigate(ROUTES.CHECKOUT);
@@ -101,9 +94,7 @@ export const ShoppingCart: React.FC = () => {
                 Zwischensumme: {subtotalBrutto.toFixed(2)} €
               </p>
               <p className="text-sm">MwSt. (19%): {mwstAmount.toFixed(2)} €</p>
-              <p className="text-sm">
-                Versandkosten: {shippingCosts.toFixed(2)} €
-              </p>
+              <p className="text-sm">Versandkosten: 5.99 €</p>
               <p className="text-xl font-semibold">
                 Gesamt: {totalWithShipping.toFixed(2)} €
               </p>
