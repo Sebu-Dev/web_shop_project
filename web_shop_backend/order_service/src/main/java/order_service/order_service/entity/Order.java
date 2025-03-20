@@ -26,9 +26,6 @@ public class Order {
     @Column(name = "date", nullable = false)
     private String date;
 
-    @Column(name = "price", nullable = false)
-    private double price;
-
     @Column(name = "order_number", nullable = false)
     private String orderNumber;
 
@@ -88,14 +85,6 @@ public class Order {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
 
     public double getSubTotalBrutto() {

@@ -89,6 +89,6 @@ public class OrderSeeder implements CommandLineRunner {
         double totalWithShipping = subTotalBrutto + mwstAmount + order.getShippingCosts();
         order.setTotalWithShipping(totalWithShipping);
 
-        order.setPrice(subTotalBrutto); // "price" als subTotalBrutto
+        order.setSubTotalBrutto(subTotalBrutto); // "price" als subTotalBrutto
     }
 }

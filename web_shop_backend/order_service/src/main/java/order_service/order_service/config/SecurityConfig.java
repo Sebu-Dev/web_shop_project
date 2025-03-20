@@ -28,12 +28,14 @@ public class SecurityConfig {
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers(HttpMethod.GET, "/api/orders",
-                                                                "/api/orders/user/{userId}", "/api/orders/{id}",
-                                                                "/api/orders/{id}/details")
-                                                .hasAnyRole("USER", "ADMIN")
+                                                                "/api/orders/user/*", "/api/orders/*",
+                                                                "/api/orders/*/details")
+                                                .permitAll().requestMatchers(HttpMethod.POST, "/api/orders",
+                                                                "/api/orders/user/*", "/api/orders/*",
+                                                                "/api/orders/*/details")
+                                                .permitAll()
                                                 .requestMatchers("/api/orders/**")
-                                                .hasRole("ADMIN")
-                                                .anyRequest().authenticated())
+                                                .permitAll().anyRequest().authenticated())
                                 .addFilterBefore(new JwtAuthenticationFilter(userServiceClient),
                                                 UsernamePasswordAuthenticationFilter.class)
                                 .httpBasic(httpBasic -> httpBasic.disable());
@@ -45,8 +47,7 @@ public class SecurityConfig {
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
                 configuration.setAllowedOrigins(Arrays.asList(
-                                "http://localhost:5173", // Frontend
-                                "http://localhost:8003" // Lokale Tests
+                                "http://localhost:5173" // Frontend
                 ));
                 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
                 configuration.setAllowedHeaders(Arrays.asList("*"));
