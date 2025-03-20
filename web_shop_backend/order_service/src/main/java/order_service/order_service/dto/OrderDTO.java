@@ -7,7 +7,6 @@ public class OrderDTO {
     private Long userId;
     private List<OrderItemDTO> items;
 
-    // Getter und Setter
     public Long getId() {
         return id;
     }

@@ -1,13 +1,16 @@
 package user_service.user_service.dto;
 
+import java.util.Optional;
+
 public class UpdateUserDTO {
 
     private Long id;
     private String address;
     private String username;
     private String email;
-    private String currentPassword;
-    private String newPassword;
+    private Optional<String> currentPassword;
+    private Optional<String> newPassword;
+    private String role;
 
     public void setId(Long id) {
         this.id = id;
@@ -41,19 +44,28 @@ public class UpdateUserDTO {
         return this.email;
     }
 
-    public void setCurrentPassword(String currentPasswordHash) {
+    public void setCurrentPassword(Optional<String> currentPasswordHash) {
         this.currentPassword = currentPasswordHash;
     }
 
-    public String getCurrentPasswordHash() {
+    public Optional<String> getCurrentPassword() {
         return this.currentPassword;
     }
 
-    public void setNewPasswordHash(String newPasswordHash) {
+    public void setNewPassword(Optional<String> newPasswordHash) {
         this.newPassword = newPasswordHash;
     }
 
-    public String getNewPasswordHash() {
+    public Optional<String> getNewPassword() {
         return this.newPassword;
     }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getRole() {
+        return this.role;
+    }
+
 }
