@@ -30,11 +30,12 @@ export const createOrder = async (order: Omit<Order, 'id'>): Promise<Order> => {
 };
 
 // GET: Alle Bestellungen abrufen (optional gefiltert nach userId)
-export const getOrders = async (userId?: string): Promise<Order[]> => {
+export const getOrders = async (userId: string): Promise<Order[]> => {
   try {
     const url = userId
-      ? `${API_USERS.ORDER}?userId=${userId}`
-      : API_USERS.ORDER;
+      ? `${API_USERS.ORDER}?userId=${userId}` // URL mit userId
+      : API_USERS.ORDER; // Fallback ohne userId
+    console.log(userId); // Überprüfung der userId
     const response = await fetch(url);
 
     if (!response.ok) {
