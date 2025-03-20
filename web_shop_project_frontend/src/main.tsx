@@ -17,6 +17,7 @@ import { ROUTES } from './config/Routes.ts';
 import CheckoutSuccess from './pages/Checkout/CheckoutSuccess.tsx';
 import CheckoutPage from './pages/Checkout/CheckoutPage.tsx';
 import { EditUserProfile } from './components/user/EditUserProfile.tsx';
+import { OrderHistory } from './components/user/OrderHistory.tsx';
 
 const queryClient = new QueryClient();
 
@@ -63,11 +64,11 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTES.USER_EDIT,
-        element: <EditUserProfile></EditUserProfile>,
+        element: <EditUserProfile />,
       },
       {
         path: ROUTES.USER_ORDERS,
-        element: <div>Order History (TBD)</div>,
+        element: <OrderHistory />,
       },
     ],
   },

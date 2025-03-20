@@ -1,5 +1,4 @@
 import useCartStore from '@/store/useShoppingCartStore';
-import { ProductType } from '@/types/ProductType';
 import { Button } from './ui/button';
 import {
   Card,
@@ -15,16 +14,21 @@ export const ShoppingCart: React.FC = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCartStore();
   const navigate = useNavigate();
 
-  const handleCheckout = () => {
-    navigate(ROUTES.CHECKOUT);
-  };
+  const shippingCosts = 5.99; // Feste Versandkosten
+  const mwstRate = 0.19; // 19% MwSt.
 
-  // Berechne den Gesamtpreis
-  const totalPrice = cart.reduce((sum: number, item: ProductType) => {
-    // Wenn quantity nicht definiert, setze sie auf 1
+  // Berechnungen
+  const subtotalBrutto = cart.reduce((sum, item) => {
     const quantity = item.quantity || 1;
     return sum + item.price * quantity;
   }, 0);
+  const subtotalNetto = subtotalBrutto / (1 + mwstRate);
+  const mwstAmount = subtotalBrutto - subtotalNetto;
+  const totalWithShipping = subtotalBrutto + shippingCosts;
+
+  const handleCheckout = () => {
+    navigate(ROUTES.CHECKOUT);
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -73,7 +77,9 @@ export const ShoppingCart: React.FC = () => {
                         onClick={() =>
                           updateQuantity(item.id, (item.quantity || 0) + 1)
                         }
-                      ></Button>
+                      >
+                        +
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -84,19 +90,24 @@ export const ShoppingCart: React.FC = () => {
                   >
                     Entfernen
                   </Button>
-                  <Button variant="default" onClick={handleCheckout}>
-                    Abschließen
-                  </Button>
                 </CardFooter>
               </div>
             </Card>
           ))}
 
-          {/* Gesamtpreis und Warenkorb leeren */}
           <div className="mt-6 flex items-center justify-between">
-            <p className="text-xl font-semibold">
-              Gesamt: {totalPrice.toFixed(2)} €
-            </p>
+            <div className="text-left">
+              <p className="text-sm">
+                Zwischensumme: {subtotalBrutto.toFixed(2)} €
+              </p>
+              <p className="text-sm">MwSt. (19%): {mwstAmount.toFixed(2)} €</p>
+              <p className="text-sm">
+                Versandkosten: {shippingCosts.toFixed(2)} €
+              </p>
+              <p className="text-xl font-semibold">
+                Gesamt: {totalWithShipping.toFixed(2)} €
+              </p>
+            </div>
             <Button
               variant="outline"
               className="border-red-500 text-red-500 hover:bg-red-50"
@@ -105,6 +116,9 @@ export const ShoppingCart: React.FC = () => {
               Warenkorb leeren
             </Button>
           </div>
+          <Button variant="default" onClick={handleCheckout}>
+            Zur Kasse
+          </Button>
         </div>
       )}
     </div>

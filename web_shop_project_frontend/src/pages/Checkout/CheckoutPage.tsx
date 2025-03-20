@@ -9,8 +9,9 @@ import useCartStore from '@/store/useShoppingCartStore';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { generateInvoicePDF } from '@/utils/generateInvoicePDF'; // Adjust path as needed
+import { generateInvoicePDF } from '@/utils/generateInvoicePDF';
 import { ProductType } from '@/types/ProductType';
+import { Order } from '@/types/OrderType';
 
 const CheckoutPage: React.FC = () => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -19,12 +20,20 @@ const CheckoutPage: React.FC = () => {
   const { cart, clearCart } = useCartStore();
   const navigate = useNavigate();
 
-  // Memoized total price calculation
-  const totalPrice = useMemo(() => {
-    return cart.reduce((sum, item) => {
+  const shippingCosts = 5.99; // Feste Versandkosten
+  const mwstRate = 0.19; // 19% MwSt.
+
+  // Memoized Berechnungen
+  const calculations = useMemo(() => {
+    const subtotalBrutto = cart.reduce((sum, item) => {
       const quantity = item.quantity || 1;
       return sum + item.price * quantity;
     }, 0);
+    const subtotalNetto = subtotalBrutto / (1 + mwstRate);
+    const mwstAmount = subtotalBrutto - subtotalNetto;
+    const totalWithShipping = subtotalBrutto + shippingCosts;
+
+    return { subtotalBrutto, subtotalNetto, mwstAmount, totalWithShipping };
   }, [cart]);
 
   // Checkout handler
@@ -33,32 +42,44 @@ const CheckoutPage: React.FC = () => {
     setError(null);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
-      const generatedPdfUrl = await generateInvoicePDF(cart, totalPrice);
+
+      const orderDate = new Date().toISOString();
+      const order: Order = {
+        id: `order_${Date.now()}`, // Temporäre ID
+        date: orderDate,
+        items: cart.map((item) => ({ ...item, quantity: item.quantity || 1 })),
+        subtotalBrutto: calculations.subtotalBrutto,
+        mwstRate,
+        mwstAmount: calculations.mwstAmount,
+        shippingCosts,
+        totalWithShipping: calculations.totalWithShipping,
+      };
+
+      const generatedPdfUrl = await generateInvoicePDF(order);
       setPdfUrl(generatedPdfUrl);
       clearCart();
-      navigate('/checkout-success', { state: { pdfUrl: generatedPdfUrl } });
+      navigate('/checkout-success', {
+        state: { pdfUrl: generatedPdfUrl, order },
+      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
-
       setError(errorMessage);
       console.error('Checkout Fehler:', err);
     } finally {
       setLoading(false);
     }
-  }, [cart, totalPrice, clearCart, navigate]);
+  }, [cart, calculations, clearCart, navigate]);
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold md:text-3xl">Checkout</h1>
 
-      {/* Error Message */}
       {error && (
         <div className="mb-4 rounded-md bg-red-100 p-4 text-red-700">
           {error}
         </div>
       )}
 
-      {/* Cart Items */}
       <div className="space-y-4">
         {cart.length === 0 ? (
           <p className="py-8 text-center text-gray-500">
@@ -104,12 +125,22 @@ const CheckoutPage: React.FC = () => {
         )}
       </div>
 
-      {/* Total and Checkout Button */}
       {cart.length > 0 && (
         <div className="mt-6 flex flex-col items-center gap-4 md:flex-row md:justify-between">
-          <p className="text-xl font-semibold">
-            Gesamt: {totalPrice.toFixed(2)} €
-          </p>
+          <div className="text-left">
+            <p className="text-sm">
+              Zwischensumme: {calculations.subtotalBrutto.toFixed(2)} €
+            </p>
+            <p className="text-sm">
+              MwSt. (19%): {calculations.mwstAmount.toFixed(2)} €
+            </p>
+            <p className="text-sm">
+              Versandkosten: {shippingCosts.toFixed(2)} €
+            </p>
+            <p className="text-xl font-semibold">
+              Gesamt: {calculations.totalWithShipping.toFixed(2)} €
+            </p>
+          </div>
           <Button
             variant="default"
             onClick={handleCheckout}
@@ -122,7 +153,6 @@ const CheckoutPage: React.FC = () => {
         </div>
       )}
 
-      {/* PDF Preview */}
       {pdfUrl && (
         <div className="mt-8">
           <h2 className="mb-4 text-xl font-bold md:text-2xl">Rechnung</h2>

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { User as UserIcon, LogOut, Edit, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLoginPopup } from '@/store/useLoginPopupStore';
+import { ROUTES } from '@/config/Routes';
 
 export const User = () => {
   const { user, logout } = useUserSession();
@@ -50,7 +51,7 @@ export const User = () => {
                 asChild
                 className="flex w-full items-center gap-2 md:w-auto"
               >
-                <Link to="/user/edit">
+                <Link to={ROUTES.USER_EDIT}>
                   <Edit className="h-4 w-4" /> Profil bearbeiten
                 </Link>
               </Button>
@@ -59,7 +60,7 @@ export const User = () => {
                 asChild
                 className="flex w-full items-center gap-2 md:w-auto"
               >
-                <Link to="/user/orders">
+                <Link to={ROUTES.USER_ORDERS}>
                   <Package className="h-4 w-4" /> Bestellverlauf
                 </Link>
               </Button>
