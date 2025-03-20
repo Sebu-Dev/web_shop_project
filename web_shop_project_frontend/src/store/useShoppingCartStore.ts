@@ -6,8 +6,8 @@ interface CartState {
   cart: ProductType[];
   userId: number | null;
   addToCart: (item: ProductType) => void;
-  removeFromCart: (itemId: string) => void;
-  updateQuantity: (itemId: string, quantity: number) => void;
+  removeFromCart: (itemId: number) => void;
+  updateQuantity: (itemId: number, quantity: number) => void;
   clearCart: () => void;
   syncWithUser: () => void;
 }
@@ -39,7 +39,7 @@ const useCartStore = create<CartState>((set) => ({
     });
   },
 
-  removeFromCart: (itemId: string) => {
+  removeFromCart: (itemId: number) => {
     set((state) => {
       const newCart = state.cart.filter((item) => item.id !== itemId);
 
@@ -53,7 +53,7 @@ const useCartStore = create<CartState>((set) => ({
     });
   },
 
-  updateQuantity: (itemId: string, quantity: number) => {
+  updateQuantity: (itemId: number, quantity: number) => {
     set((state) => {
       const newCart = state.cart.map((item) =>
         item.id === itemId ? { ...item, quantity } : item

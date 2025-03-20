@@ -15,7 +15,6 @@ export const ShoppingCart: React.FC = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCartStore();
   const navigate = useNavigate();
 
-  // Zentrale Berechnungen mit calculateOrder
   const { subtotalBrutto, mwstAmount, totalWithShipping } =
     calculateOrder(cart);
 
@@ -28,9 +27,11 @@ export const ShoppingCart: React.FC = () => {
       <h1 className="mb-6 text-3xl font-bold">Warenkorb</h1>
 
       {cart.length === 0 ? (
-        <p className="text-center text-gray-500">Dein Warenkorb ist leer.</p>
+        <p className="b text-center text-gray-500 backdrop-blur-3xl">
+          Dein Warenkorb ist leer.
+        </p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {cart.map((item) => (
             <Card key={item.id} className="flex w-full items-center">
               <img
@@ -43,17 +44,18 @@ export const ShoppingCart: React.FC = () => {
                   <CardTitle>
                     {item.name}{' '}
                     {item.onSale && (
-                      <span className="text-red-500">(Im Angebot)</span>
+                      <span className="text-teal-600">(Im Angebot)</span>
                     )}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-6">
                     <p>Preis: {item.price.toFixed(2)} €</p>
                     <div className="flex items-center space-x-2">
                       <Button
                         variant="outline"
                         size="sm"
+                        className="border-neutral-300 text-black hover:bg-blue-50"
                         onClick={() =>
                           updateQuantity(
                             item.id,
@@ -67,6 +69,7 @@ export const ShoppingCart: React.FC = () => {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="border-neutral-300 text-black hover:bg-blue-50"
                         onClick={() =>
                           updateQuantity(item.id, (item.quantity || 0) + 1)
                         }
@@ -78,38 +81,48 @@ export const ShoppingCart: React.FC = () => {
                 </CardContent>
                 <CardFooter>
                   <Button
-                    variant="destructive"
+                    variant="ghost"
+                    size="sm"
+                    className="text-blue-600 hover:bg-blue-50 hover:text-blue-800"
                     onClick={() => removeFromCart(item.id)}
                   >
-                    Entfernen
+                    × Entfernen
                   </Button>
                 </CardFooter>
               </div>
             </Card>
           ))}
 
-          <div className="mt-6 flex items-center justify-between">
-            <div className="text-left">
-              <p className="text-sm">
+          <div className="mt-8 flex flex-col items-end gap-4">
+            <div className="text-right">
+              <p className="text-sm text-gray-600">
                 Zwischensumme: {subtotalBrutto.toFixed(2)} €
               </p>
-              <p className="text-sm">MwSt. (19%): {mwstAmount.toFixed(2)} €</p>
-              <p className="text-sm">Versandkosten: 5.99 €</p>
-              <p className="text-xl font-semibold">
+              <p className="text-sm text-gray-600">
+                MwSt. (19%): {mwstAmount.toFixed(2)} €
+              </p>
+              <p className="text-sm text-gray-600">Versandkosten: 5.99 €</p>
+              <p className="text-xl font-semibold text-neutral-300">
                 Gesamt: {totalWithShipping.toFixed(2)} €
               </p>
             </div>
-            <Button
-              variant="outline"
-              className="border-red-500 text-red-500 hover:bg-red-50"
-              onClick={clearCart}
-            >
-              Warenkorb leeren
-            </Button>
+            <div className="flex gap-4">
+              <Button
+                variant="default"
+                className="bg-cyan-900 text-neutral-200 hover:bg-cyan-700"
+                onClick={clearCart}
+              >
+                Warenkorb leeren
+              </Button>
+              <Button
+                variant="default"
+                className="bg-teal-600 text-white hover:bg-teal-700"
+                onClick={handleCheckout}
+              >
+                Zur Kasse
+              </Button>
+            </div>
           </div>
-          <Button variant="default" onClick={handleCheckout}>
-            Zur Kasse
-          </Button>
         </div>
       )}
     </div>
