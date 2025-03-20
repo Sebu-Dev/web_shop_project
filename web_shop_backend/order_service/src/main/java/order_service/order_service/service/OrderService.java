@@ -84,13 +84,13 @@ public class OrderService {
                     // API-Aufruf zum product_service
                     try {
                         ProductDetailsDTO product = restTemplate.getForObject(
-                                "http://localhost:8002/api/products/" + item.getProductId(),
+                                "http://localhost:8002/api/products/" + item.getProductId() + "/details",
                                 ProductDetailsDTO.class);
                         itemDetails.setProduct(product);
                     } catch (Exception e) {
                         logger.error("Failed to fetch product data for productId {}: {}", item.getProductId(),
                                 e.getMessage());
-                        itemDetails.setProduct(null); // Fallback: Keine Produktdaten
+                        itemDetails.setProduct(null);
                     }
 
                     return itemDetails;
