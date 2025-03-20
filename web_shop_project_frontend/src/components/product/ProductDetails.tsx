@@ -2,17 +2,33 @@ import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import useCartStore from '@/store/useShoppingCartStore';
-import { useProductStore } from '@/store/useProductStore';
+import { useGetProducts } from '@/hooks/useGetProducts';
 
 function ProductDetails() {
+  const { data: products, isLoading } = useGetProducts();
   const { id } = useParams();
   const { addToCart } = useCartStore();
   const [quantity, setQuantity] = useState(1);
-  const { products } = useProductStore();
 
   // Finde das Produkt anhand der ID
-  const product = products.find((p) => p.id === id);
 
+  const product = products?.find((p) => {
+    return p.id.toString() === id;
+  });
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <motion.div
+          className="h-16 w-16 animate-spin rounded-full border-4 border-t-blue-500 border-r-transparent border-b-blue-500 border-l-transparent"
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+        />
+        <span className="ml-4 text-lg font-semibold text-gray-300">
+          Lädt...
+        </span>
+      </div>
+    );
+  }
   if (!product) {
     return <div>Produkt nicht gefunden</div>; // Fehlerbehandlung, falls das Produkt nicht existiert
   }

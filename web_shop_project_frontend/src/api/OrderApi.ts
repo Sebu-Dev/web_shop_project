@@ -1,14 +1,16 @@
 // @/api/OrderApi.ts
 import { Order } from '@/types/OrderType';
+import { API_USERS } from '../config/Api';
 
 // API-Endpunkt-URL (kann später durch eine Umgebungsvariable ersetzt werden)
-const API_URL = '/api/orders';
 
 // POST: Bestellung erstellen
 export const createOrder = async (order: Omit<Order, 'id'>): Promise<Order> => {
   try {
-    const response = await fetch(API_URL, {
+    console.log(order);
+    const response = await fetch(API_USERS.ORDER, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -30,7 +32,9 @@ export const createOrder = async (order: Omit<Order, 'id'>): Promise<Order> => {
 // GET: Alle Bestellungen abrufen (optional gefiltert nach userId)
 export const getOrders = async (userId?: string): Promise<Order[]> => {
   try {
-    const url = userId ? `${API_URL}?userId=${userId}` : API_URL;
+    const url = userId
+      ? `${API_USERS.ORDER}?userId=${userId}`
+      : API_USERS.ORDER;
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -48,7 +52,7 @@ export const getOrders = async (userId?: string): Promise<Order[]> => {
 // GET: Einzelne Bestellung abrufen
 export const getOrderById = async (orderId: string): Promise<Order> => {
   try {
-    const response = await fetch(`${API_URL}/${orderId}`);
+    const response = await fetch(`${API_USERS.ORDER}/${orderId}`);
 
     if (!response.ok) {
       throw new Error('Fehler beim Abrufen der Bestellung');

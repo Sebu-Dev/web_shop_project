@@ -8,12 +8,15 @@ import order_service.order_service.entity.OrderItem;
 import order_service.order_service.repository.OrderRepository;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import jakarta.transaction.Transactional;
+import order_service.order_service.entity.Order;
+import order_service.order_service.entity.OrderItem;
+import order_service.order_service.repository.OrderRepository;
 
 @Service
 public class OrderService {
@@ -40,6 +43,7 @@ public class OrderService {
         return order;
     }
 
+    @Transactional
     public Order createOrder(Order order) {
         Order savedOrder = orderRepository.save(order);
         return savedOrder;

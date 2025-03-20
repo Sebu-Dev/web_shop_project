@@ -14,6 +14,7 @@ import { ProductType } from '@/types/ProductType';
 import { Order } from '@/types/OrderType';
 import { calculateOrder } from '@/utils/OrderCalculator';
 import { useUserSession } from '@/store/useUserSessionStore';
+import { usePostOrder } from '@/hooks/usePostOrder';
 
 const CheckoutPage: React.FC = () => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -22,24 +23,25 @@ const CheckoutPage: React.FC = () => {
   const { cart, clearCart } = useCartStore();
   const { user } = useUserSession();
   const navigate = useNavigate();
+  const { mutate: postOrder } = usePostOrder();
 
   // Memoized Berechnungen mit calculateOrder
   const calculations = useMemo(() => calculateOrder(cart), [cart]);
 
   // Checkout handler
   const handleCheckout = useCallback(async () => {
-    if (user === null) {
+    if (user === undefined || user === null) {
       return;
     }
     setLoading(true);
     setError(null);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
-
       const orderDate = new Date().toISOString();
       const order: Order = {
         userId: user.id,
-        id: `order_${Date.now()}`, // Temporäre ID
+        id: null,
+        orderNumber: `order_${Date.now()}`, // Temporäre ID
         date: orderDate,
         items: cart.map((item) => ({ ...item, quantity: item.quantity || 1 })),
         subtotalBrutto: calculations.subtotalBrutto,
@@ -48,6 +50,7 @@ const CheckoutPage: React.FC = () => {
         shippingCosts: 5.99, // Standardwert
         totalWithShipping: calculations.totalWithShipping,
       };
+      postOrder(order);
 
       const generatedPdfUrl = await generateInvoicePDF(order);
       setPdfUrl(generatedPdfUrl);
@@ -62,7 +65,16 @@ const CheckoutPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [cart, calculations, clearCart, navigate]);
+  }, [
+    user,
+    cart,
+    calculations.subtotalBrutto,
+    calculations.mwstAmount,
+    calculations.totalWithShipping,
+    postOrder,
+    clearCart,
+    navigate,
+  ]);
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">

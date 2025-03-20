@@ -1,8 +1,16 @@
 package order_service.order_service.entity;
 
-import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "orders")
@@ -20,6 +28,9 @@ public class Order {
 
     @Column(name = "price", nullable = false)
     private double price;
+
+    @Column(name = "order_number", nullable = false)
+    private String orderNumber;
 
     @Column(name = "sub_total_brutto", nullable = false)
     private double subTotalBrutto;
@@ -45,6 +56,14 @@ public class Order {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
     public Long getUserId() {
