@@ -3,17 +3,35 @@ package product_service.product_service.config;
 import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import product_service.product_service.security.AuthClient;
+import product_service.product_service.security.JwtValidationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+        @Bean
+        public RestTemplate restTemplate() {
+                return new RestTemplate();
+        }
+
+        @Bean
+        public AuthClient authClient(RestTemplate restTemplate) {
+                return new AuthClient(restTemplate);
+        }
+
+        @Bean
+        public JwtValidationFilter jwtValidationFilter(AuthClient authClient) {
+                return new JwtValidationFilter(authClient);
+        }
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -21,9 +39,10 @@ public class SecurityConfig {
                                 .csrf(csrf -> csrf.disable())
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers(HttpMethod.GET, "/api/products/**").authenticated()
-                                                .requestMatchers("/api/products/**").hasRole("ADMIN")
-                                                .anyRequest().permitAll());
+                                                .requestMatchers("/api/products/**").authenticated()
+                                                .anyRequest().permitAll())
+                                .addFilterBefore(jwtValidationFilter(authClient(restTemplate())),
+                                                UsernamePasswordAuthenticationFilter.class);
                 return http.build();
         }
 
