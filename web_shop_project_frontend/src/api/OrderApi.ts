@@ -30,11 +30,9 @@ export const createOrder = async (order: Omit<Order, 'id'>): Promise<Order> => {
 };
 
 // GET: Alle Bestellungen abrufen (optional gefiltert nach userId)
-export const getOrders = async (userId?: string): Promise<Order[]> => {
+export const getOrders = async (): Promise<Order[]> => {
   try {
-    const url = userId
-      ? `${API_USERS.ORDER}?userId=${userId}`
-      : API_USERS.ORDER;
+    const url = "localhost:8003/api/orders/user/3";
     const response = await fetch(url);
 
     if (!response.ok) {

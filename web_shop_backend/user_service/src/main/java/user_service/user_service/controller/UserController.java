@@ -4,8 +4,10 @@ import user_service.user_service.config.UserDetailsResponse;
 import user_service.user_service.dto.LoginRequest;
 import user_service.user_service.dto.UpdateUserDTO;
 import user_service.user_service.dto.UserDTO;
+import user_service.user_service.dto.UserDetailsDTO;
 import user_service.user_service.dto.UserRegistrationDTO;
 import user_service.user_service.entity.User;
+import user_service.user_service.security.JwtUtil;
 import user_service.user_service.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -17,17 +19,22 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 import java.security.Key;
 import java.util.Date;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
@@ -81,6 +88,29 @@ public class UserController {
         UserDetailsResponse response = new UserDetailsResponse();
         response.setValid(false);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<UserDetailsDTO> validateToken(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).build();
+        }
+
+        String token = authHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        if (username != null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (jwtUtil.validateToken(token, userDetails)) {
+                UserDetailsDTO dto = new UserDetailsDTO();
+                dto.setUsername(userDetails.getUsername());
+                dto.setAuthorities(userDetails.getAuthorities().stream()
+                        .map(auth -> auth.getAuthority())
+                        .collect(Collectors.toList()));
+                return ResponseEntity.ok(dto);
+            }
+        }
+        return ResponseEntity.status(401).build();
     }
 
     @GetMapping("/{id}")

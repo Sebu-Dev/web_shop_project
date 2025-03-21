@@ -5,19 +5,22 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-import user_service.user_service.entity.User;
-import user_service.user_service.service.UserService;
+
 import java.io.IOException;
 
 public class CookieAuthenticationFilter extends OncePerRequestFilter {
 
-    private final UserService userService;
+    private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
 
-    public CookieAuthenticationFilter(UserService userService, JwtUtil jwtUtil) {
-        this.userService = userService;
+    public CookieAuthenticationFilter(UserDetailsService userDetailsService, JwtUtil jwtUtil) {
+        this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -38,13 +41,16 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
                 if ("authToken".equals(cookie.getName())) {
                     String token = cookie.getValue();
                     try {
-                        // Validiere JWT und extrahiere userId
-                        String userId = jwtUtil.extractUserId(token);
-                        User user = userService.getUserById(Long.parseLong(userId));
-                        if (user != null && jwtUtil.validateToken(token)) {
-                            // Erstelle Authentication-Objekt
-                            UserAuthentication authentication = new UserAuthentication(userId, user.getRole());
-                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                        // Validiere JWT und extrahiere Benutzername
+                        String username = jwtUtil.extractUsername(token);
+                        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                            if (jwtUtil.validateToken(token, userDetails)) {
+                                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                        userDetails, null, userDetails.getAuthorities());
+                                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                                SecurityContextHolder.getContext().setAuthentication(authToken);
+                            }
                         }
                     } catch (Exception e) {
                         // Ungültiger Token, ignoriere ihn

@@ -88,7 +88,6 @@ public class OrderService {
                     OrderItemDetailsDTO itemDetails = new OrderItemDetailsDTO();
                     itemDetails.setProductId(item.getProductId());
                     itemDetails.setQuantity(item.getQuantity());
-                    itemDetails.setPrice(item.getPrice());
 
                     // API-Aufruf zum product_service
                     try {

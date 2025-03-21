@@ -1,10 +1,10 @@
 package user_service.user_service.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import user_service.user_service.dto.UpdateUserDTO;
 import user_service.user_service.dto.UserRegistrationDTO;
 import user_service.user_service.entity.User;
@@ -34,7 +34,12 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Benutzer nicht gefunden"));
         if (passwordEncoder.matches(password, user.getPasswordHash())) {
-            return jwtUtil.generateToken(user.getId().toString());
+            UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                    user.getUsername(),
+                    user.getPasswordHash(),
+                    java.util.Collections.singletonList(
+                            new org.springframework.security.core.authority.SimpleGrantedAuthority(user.getRole())));
+            return jwtUtil.generateToken(userDetails);
         } else {
             throw new RuntimeException("Ungültiges Passwort");
         }
@@ -90,7 +95,6 @@ public class UserService {
         return user;
     }
 
-    // Gibt die Rolle eines Benutzers zurück
     public String getUserRole(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
