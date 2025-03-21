@@ -11,13 +11,16 @@ import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { generateInvoicePDF } from '@/utils/generateInvoicePDF';
 import { ProductType } from '@/types/ProductType';
-import { Order } from '@/types/OrderType';
+import { Order, OrderRequest } from '@/types/OrderType';
 import { calculateOrder } from '@/utils/OrderCalculator';
 import { useUserSession } from '@/store/useUserSessionStore';
 import { usePostOrder } from '@/hooks/usePostOrder';
 
 const CheckoutPage: React.FC = () => {
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<{
+    pdfUrl: string;
+    order: Order;
+  } | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { cart, clearCart } = useCartStore();
@@ -25,12 +28,11 @@ const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const { mutate: postOrder } = usePostOrder();
 
-  // Memoized Berechnungen mit calculateOrder
   const calculations = useMemo(() => calculateOrder(cart), [cart]);
 
-  // Checkout handler
   const handleCheckout = useCallback(async () => {
-    if (user === undefined || user === null) {
+    if (!user) {
+      setError('Bitte melden Sie sich an, um die Bestellung abzuschließen.');
       return;
     }
     setLoading(true);
@@ -38,25 +40,49 @@ const CheckoutPage: React.FC = () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
       const orderDate = new Date().toISOString();
-      const order: Order = {
+      const orderRequest: OrderRequest = {
         userId: user.id,
-        id: null,
-        orderNumber: `order_${Date.now()}`, // Temporäre ID
+        orderNumber: `order_${Date.now()}`,
         date: orderDate,
-        items: cart.map((item) => ({ ...item, quantity: item.quantity || 1 })),
+        items: cart.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity || 1,
+          price: item.price,
+        })),
         subtotalBrutto: calculations.subtotalBrutto,
-        mwstRate: 0.19, // Standardwert
+        mwstRate: 0.19,
         mwstAmount: calculations.mwstAmount,
-        shippingCosts: 5.99, // Standardwert
+        shippingCosts: 5.99,
         totalWithShipping: calculations.totalWithShipping,
       };
-      postOrder(order);
 
-      const generatedPdfUrl = await generateInvoicePDF(order);
-      setPdfUrl(generatedPdfUrl);
-      clearCart();
-      navigate('/checkout-success', {
-        state: { pdfUrl: generatedPdfUrl, order },
+      // Sende die Bestellung ans Backend
+      postOrder(orderRequest, {
+        onSuccess: (createdOrder: Order) => {
+          // Nach erfolgreichem POST das Order-Objekt mit ID verwenden
+          const order: Order = {
+            ...orderRequest,
+            id: createdOrder.id, // ID vom Backend
+            items: orderRequest.items.map((item, index) => ({
+              id: createdOrder.items[index]?.id || 0, // IDs vom Backend oder Fallback
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.price,
+              name: cart[index].name, // Zusätzliche Daten aus dem Cart für PDF
+              description: cart[index].description,
+              image: cart[index].image,
+            })),
+          };
+
+          // PDF generieren und weiterleiten
+          generateInvoicePDF(order).then((generatedPdfUrl) => {
+            setSelectedOrder({ pdfUrl: generatedPdfUrl, order });
+            clearCart();
+            navigate('/checkout-success', {
+              state: { pdfUrl: generatedPdfUrl, order },
+            });
+          });
+        },
       });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
@@ -148,7 +174,7 @@ const CheckoutPage: React.FC = () => {
           <Button
             variant="default"
             onClick={handleCheckout}
-            disabled={loading}
+            disabled={loading || !user}
             className="w-full md:w-auto"
           >
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -157,18 +183,21 @@ const CheckoutPage: React.FC = () => {
         </div>
       )}
 
-      {pdfUrl && (
+      {selectedOrder && (
         <div className="mt-8">
           <h2 className="mb-4 text-xl font-bold md:text-2xl">Rechnung</h2>
           <div className="relative h-[500px] w-full">
             <iframe
-              src={pdfUrl}
+              src={selectedOrder.pdfUrl}
               title="Rechnung"
               className="h-full w-full rounded-md border"
             />
           </div>
           <div className="mt-4 flex justify-center">
-            <a href={pdfUrl} download="Rechnung.pdf">
+            <a
+              href={selectedOrder.pdfUrl}
+              download={`Rechnung_${selectedOrder.order.orderNumber}.pdf`}
+            >
               <Button variant="outline">Rechnung herunterladen</Button>
             </a>
           </div>

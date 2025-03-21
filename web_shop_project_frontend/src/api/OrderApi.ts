@@ -1,13 +1,11 @@
 // @/api/OrderApi.ts
-import { Order } from '@/types/OrderType';
+import { Order, OrderRequest } from '@/types/OrderType';
 import { API_USERS } from '../config/Api';
 
-// API-Endpunkt-URL (kann später durch eine Umgebungsvariable ersetzt werden)
-
 // POST: Bestellung erstellen
-export const createOrder = async (order: Omit<Order, 'id'>): Promise<Order> => {
+export const createOrder = async (order: OrderRequest): Promise<Order> => {
   try {
-    console.log(order);
+    console.log('Order being sent:', order);
     const response = await fetch(API_USERS.ORDER, {
       method: 'POST',
       credentials: 'include',
@@ -32,10 +30,8 @@ export const createOrder = async (order: Omit<Order, 'id'>): Promise<Order> => {
 // GET: Alle Bestellungen abrufen (optional gefiltert nach userId)
 export const getOrders = async (userId: string): Promise<Order[]> => {
   try {
-    const url = userId
-      ? `${API_USERS.ORDER}/user/${userId}` // URL mit userId
-      : API_USERS.ORDER; // Fallback ohne userId
-    console.log(userId); // Überprüfung der userId
+    const url = userId ? `${API_USERS.ORDER}/user/${userId}` : API_USERS.ORDER;
+    console.log('Fetching orders for userId:', userId);
     const response = await fetch(url);
 
     if (!response.ok) {

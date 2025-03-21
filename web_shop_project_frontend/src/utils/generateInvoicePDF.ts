@@ -103,7 +103,7 @@ export const generateInvoicePDF = async (order: Order): Promise<string> => {
 
     // Artikel
     order.items.forEach((item) => {
-      const quantity = item.quantity || 1;
+      const quantity = item.quantity;
       const bruttoPrice = item.price;
       const nettoPrice = bruttoPrice / (1 + order.mwstRate);
       const totalNetto = nettoPrice * quantity;
@@ -115,7 +115,7 @@ export const generateInvoicePDF = async (order: Order): Promise<string> => {
         size: fontSize.normal,
         font,
       });
-      page.drawText(item.name, {
+      page.drawText(item.name || 'Unbekannt', {
         x: 100,
         y: yPosition,
         size: fontSize.normal,

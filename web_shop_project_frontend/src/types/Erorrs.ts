@@ -7,3 +7,6 @@ export type FormErrors = {
   newPassword?: string;
   confirmPassword?: string;
 };
+export type OrderError = {
+  message: string;
+};
