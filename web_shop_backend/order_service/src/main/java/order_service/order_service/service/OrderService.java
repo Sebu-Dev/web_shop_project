@@ -24,8 +24,8 @@ public class OrderService {
     //
 
     private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
-    private static final String PRODUCT_SERVICE_URL = "http://localhost:8002/api/products/"; // Anpassen an deine
-                                                                                             // Umgebung
+    private static final String PRODUCT_SERVICE_URL = "http://product-service:8002/api/products/"; // Anpassen an deine
+    // Umgebung
 
     @Autowired
     private OrderRepository orderRepository;

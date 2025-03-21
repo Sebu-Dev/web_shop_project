@@ -32,6 +32,7 @@ export function RegistrationForm({
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setRegistrationError(null);
+
     if (password !== confirmPassword) {
       setRegistrationError('Passwords do not match');
       return;

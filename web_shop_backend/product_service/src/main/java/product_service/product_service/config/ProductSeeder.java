@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import product_service.product_service.entity.Product;
 import product_service.product_service.repository.ProductRepository;
 
@@ -22,7 +23,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Laptop").isEmpty()) {
                 Product laptop = new Product();
                 laptop.setName("Laptop");
-                laptop.setImage("laptop.jpg");
+                laptop.setImage(
+                        "https://media.medion.com/prod/medion/de_DE/0817/0814/0782/75245_E15433_G1_3000x3000_DE.png?imwidth=640");
                 laptop.setPrice(999.99);
                 laptop.setOnSale(false);
                 laptop.setDescription("High-end Laptop");
@@ -36,7 +38,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Smartphone").isEmpty()) {
                 Product smartphone = new Product();
                 smartphone.setName("Smartphone");
-                smartphone.setImage("smartphone.jpg");
+                smartphone.setImage(
+                        "https://media.mdm.klarmobil.de/a98e332cb9f84610693afb3bcb5b34f33f1bcd47/390x520/apple-iphone-16-pro-128-gb-titan-natur-linke-seite.webp");
                 smartphone.setPrice(599.99);
                 smartphone.setOnSale(false);
                 smartphone.setDescription("Latest Smartphone");
@@ -50,7 +53,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Headphones").isEmpty()) {
                 Product headphones = new Product();
                 headphones.setName("Headphones");
-                headphones.setImage("headphones.jpg");
+                headphones.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_118737565?x=536&y=402&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=536&ey=402&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=536&cdy=402");
                 headphones.setPrice(199.99);
                 headphones.setOnSale(false);
                 headphones.setDescription("Noise-cancelling Headphones");
@@ -64,7 +68,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Tablet").isEmpty()) {
                 Product tablet = new Product();
                 tablet.setName("Tablet");
-                tablet.setImage("tablet.jpg");
+                tablet.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_135667258?x=536&y=402&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=536&ey=402&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=536&cdy=402");
                 tablet.setPrice(399.99);
                 tablet.setOnSale(false);
                 tablet.setDescription("Lightweight Tablet");
@@ -78,7 +83,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Smartwatch").isEmpty()) {
                 Product smartwatch = new Product();
                 smartwatch.setName("Smartwatch");
-                smartwatch.setImage("smartwatch.jpg");
+                smartwatch.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_144739615?x=536&y=402&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=536&ey=402&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=536&cdy=402");
                 smartwatch.setPrice(249.99);
                 smartwatch.setOnSale(false);
                 smartwatch.setDescription("Fitness Tracking Smartwatch");
@@ -92,7 +98,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Desktop PC").isEmpty()) {
                 Product desktop = new Product();
                 desktop.setName("Desktop PC");
-                desktop.setImage("desktop.jpg");
+                desktop.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MP_149884870?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 desktop.setPrice(1499.99);
                 desktop.setOnSale(false);
                 desktop.setDescription("Powerful Desktop PC");
@@ -106,7 +113,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Monitor").isEmpty()) {
                 Product monitor = new Product();
                 monitor.setName("Monitor");
-                monitor.setImage("monitor.jpg");
+                monitor.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_136003515?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 monitor.setPrice(299.99);
                 monitor.setOnSale(false);
                 monitor.setDescription("4K Ultra HD Monitor");
@@ -120,7 +128,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Keyboard").isEmpty()) {
                 Product keyboard = new Product();
                 keyboard.setName("Keyboard");
-                keyboard.setImage("keyboard.jpg");
+                keyboard.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_98371777?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 keyboard.setPrice(89.99);
                 keyboard.setOnSale(false);
                 keyboard.setDescription("Mechanical Keyboard");
@@ -134,7 +143,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Mouse").isEmpty()) {
                 Product mouse = new Product();
                 mouse.setName("Mouse");
-                mouse.setImage("mouse.jpg");
+                mouse.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_146459924?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 mouse.setPrice(49.99);
                 mouse.setOnSale(false);
                 mouse.setDescription("Ergonomic Wireless Mouse");
@@ -148,7 +158,8 @@ public class ProductSeeder {
             if (productRepository.findByName("External Hard Drive").isEmpty()) {
                 Product hdd = new Product();
                 hdd.setName("External Hard Drive");
-                hdd.setImage("hdd.jpg");
+                hdd.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/pixelboxx-mss-79563029?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 hdd.setPrice(129.99);
                 hdd.setOnSale(false);
                 hdd.setDescription("2TB External Hard Drive");
@@ -162,7 +173,8 @@ public class ProductSeeder {
             if (productRepository.findByName("USB Stick").isEmpty()) {
                 Product usb = new Product();
                 usb.setName("USB Stick");
-                usb.setImage("usb.jpg");
+                usb.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_80965913?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 usb.setPrice(19.99);
                 usb.setOnSale(false);
                 usb.setDescription("64GB USB 3.0 Stick");
@@ -176,7 +188,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Printer").isEmpty()) {
                 Product printer = new Product();
                 printer.setName("Printer");
-                printer.setImage("printer.jpg");
+                printer.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_145237565?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 printer.setPrice(179.99);
                 printer.setOnSale(false);
                 printer.setDescription("All-in-One Printer");
@@ -190,7 +203,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Webcam").isEmpty()) {
                 Product webcam = new Product();
                 webcam.setName("Webcam");
-                webcam.setImage("webcam.jpg");
+                webcam.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_86675588?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 webcam.setPrice(79.99);
                 webcam.setOnSale(false);
                 webcam.setDescription("1080p HD Webcam");
@@ -204,7 +218,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Speaker").isEmpty()) {
                 Product speaker = new Product();
                 speaker.setName("Speaker");
-                speaker.setImage("speaker.jpg");
+                speaker.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_147504462?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 speaker.setPrice(149.99);
                 speaker.setOnSale(false);
                 speaker.setDescription("Bluetooth Speaker");
@@ -217,8 +232,9 @@ public class ProductSeeder {
             // Produkt 15: Gaming Console
             if (productRepository.findByName("Gaming Console").isEmpty()) {
                 Product console = new Product();
-                console.setName("Gaming Console");
-                console.setImage("console.jpg");
+                console.setName("Playstation 5 Console");
+                console.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_145802561?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 console.setPrice(499.99);
                 console.setOnSale(false);
                 console.setDescription("Next-Gen Gaming Console");
@@ -232,7 +248,8 @@ public class ProductSeeder {
             if (productRepository.findByName("TV").isEmpty()) {
                 Product tv = new Product();
                 tv.setName("TV");
-                tv.setImage("tv.jpg");
+                tv.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_146559850?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 tv.setPrice(799.99);
                 tv.setOnSale(false);
                 tv.setDescription("55-inch 4K Smart TV");
@@ -246,7 +263,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Router").isEmpty()) {
                 Product router = new Product();
                 router.setName("Router");
-                router.setImage("router.jpg");
+                router.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_93151413?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 router.setPrice(99.99);
                 router.setOnSale(false);
                 router.setDescription("Wi-Fi 6 Router");
@@ -260,7 +278,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Camera").isEmpty()) {
                 Product camera = new Product();
                 camera.setName("Camera");
-                camera.setImage("camera.jpg");
+                camera.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_148746345?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 camera.setPrice(699.99);
                 camera.setOnSale(false);
                 camera.setDescription("Mirrorless Digital Camera");
@@ -274,7 +293,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Drone").isEmpty()) {
                 Product drone = new Product();
                 drone.setName("Drone");
-                drone.setImage("drone.jpg");
+                drone.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_100477259?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 drone.setPrice(399.99);
                 drone.setOnSale(false);
                 drone.setDescription("4K Camera Drone");
@@ -288,7 +308,8 @@ public class ProductSeeder {
             if (productRepository.findByName("Smart Bulb").isEmpty()) {
                 Product bulb = new Product();
                 bulb.setName("Smart Bulb");
-                bulb.setImage("smart_bulb.jpg");
+                bulb.setImage(
+                        "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_87998504?x=320&y=320&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=320&ey=320&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=320&cdy=320");
                 bulb.setPrice(29.99);
                 bulb.setOnSale(false);
                 bulb.setDescription("Wi-Fi Smart LED Bulb");

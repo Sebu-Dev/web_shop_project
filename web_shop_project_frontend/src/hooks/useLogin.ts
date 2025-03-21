@@ -11,19 +11,14 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: login,
     onMutate: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     },
     onError: (error) => {
       console.log('Login failed:', error);
     },
-    onSuccess: (response) => {
-      if (response && 'id' in response && 'username' in response) {
-        const user = response as UserType;
-        setUser(user);
-        syncWithUser();
-      } else {
-        throw new Error('Ungültige Anmeldedaten oder Serverfehler');
-      }
+    onSuccess: (response: UserType) => {
+      setUser(response);
+      syncWithUser();
     },
   });
 };

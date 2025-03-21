@@ -1,14 +1,8 @@
 package user_service.user_service.controller;
 
-import user_service.user_service.config.UserDetailsResponse;
-import user_service.user_service.dto.LoginRequest;
-import user_service.user_service.dto.UpdateUserDTO;
-import user_service.user_service.dto.UserDTO;
-import user_service.user_service.dto.UserRegistrationDTO;
-import user_service.user_service.entity.User;
-import user_service.user_service.service.UserService;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +12,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import java.security.Key;
-import java.util.Date;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import user_service.user_service.config.UserDetailsResponse;
+import user_service.user_service.dto.LoginRequest;
+import user_service.user_service.dto.UpdateUserDTO;
+import user_service.user_service.dto.UserDTO;
+import user_service.user_service.dto.UserRegistrationDTO;
+import user_service.user_service.entity.User;
+import user_service.user_service.service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
@@ -38,31 +36,49 @@ public class UserController {
     private final Key signingKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody UserRegistrationDTO registerDTO) {
-        logger.info("registration request: {}", registerDTO);
-        User user = userService.register(registerDTO);
-        return ResponseEntity.ok(new UserDTO(user.getId(), user.getUsername(), user.getEmail()));
+    public ResponseEntity<?> register(@RequestBody UserRegistrationDTO registerDTO) {
+        logger.info("Registration request: {}", registerDTO);
+        try {
+            User user = userService.register(registerDTO);
+            UserDTO userDTO = new UserDTO(user.getId(), user.getUsername(), user.getEmail());
+            return ResponseEntity.ok(userDTO);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Registration failed: {}", e.getMessage());
+            return ResponseEntity.status(409).body(new ErrorResponse(e.getMessage())); // 409 Conflict für Duplikate
+        } catch (Exception e) {
+            logger.error("Unexpected error during registration: {}", e.getMessage());
+            return ResponseEntity.status(500).body(new ErrorResponse("Internal server error"));
+        }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> login(@RequestBody LoginRequest loginDTO) {
-        User user = userService.authenticate(loginDTO.getUsername(), loginDTO.getPassword());
-        String token = Jwts.builder()
-                .setSubject(user.getUsername())
-                .claim("role", user.getRole())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(signingKey)
-                .compact();
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginDTO) {
+        try {
+            User user = userService.authenticate(loginDTO.getUsername(), loginDTO.getPassword());
+            String token = Jwts.builder()
+                    .setSubject(user.getUsername())
+                    .claim("role", user.getRole())
+                    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                    .signWith(signingKey)
+                    .compact();
 
-        ResponseCookie cookie = ResponseCookie.from("authToken", token)
-                .httpOnly(true)
-                .path("/")
-                .maxAge(24 * 60 * 60)
-                .build();
+            ResponseCookie cookie = ResponseCookie.from("authToken", token)
+                    .httpOnly(true)
+                    .path("/")
+                    .maxAge(24 * 60 * 60)
+                    .build();
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new UserDTO(user.getId(), user.getUsername(), user.getEmail()));
+            UserDTO userDTO = new UserDTO(user.getId(), user.getUsername(), user.getEmail());
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                    .body(userDTO);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Login failed: {}", e.getMessage());
+            return ResponseEntity.status(401).body(new ErrorResponse("Invalid credentials")); // 401 Unauthorized
+        } catch (Exception e) {
+            logger.error("Unexpected error during login: {}", e.getMessage());
+            return ResponseEntity.status(500).body(new ErrorResponse("Internal server error"));
+        }
     }
 
     @GetMapping("/validate")
@@ -84,19 +100,61 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        try {
+            User user = userService.getUserById(id);
+            return ResponseEntity.ok(user);
+        } catch (IllegalArgumentException e) {
+            logger.warn("User not found: {}", e.getMessage());
+            return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage())); // 404 Not Found
+        } catch (Exception e) {
+            logger.error("Unexpected error: {}", e.getMessage());
+            return ResponseEntity.status(500).body(new ErrorResponse("Internal server error"));
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO user) {
-        return ResponseEntity.ok(userService.updateUser(id, user));
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO userDTO) {
+        try {
+            User updatedUser = userService.updateUser(id, userDTO);
+            return ResponseEntity.ok(updatedUser);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Update failed: {}", e.getMessage());
+            return ResponseEntity.status(400).body(new ErrorResponse(e.getMessage())); // 400 Bad Request
+        } catch (Exception e) {
+            logger.error("Unexpected error during update: {}", e.getMessage());
+            return ResponseEntity.status(500).body(new ErrorResponse("Internal server error"));
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            logger.warn("Delete failed: {}", e.getMessage());
+            return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage())); // 404 Not Found
+        } catch (Exception e) {
+            logger.error("Unexpected error during delete: {}", e.getMessage());
+            return ResponseEntity.status(500).body(new ErrorResponse("Internal server error"));
+        }
     }
 
+    // Hilfsklasse für Fehlerantworten
+    private static class ErrorResponse {
+        private String message;
+
+        public ErrorResponse(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
 }

@@ -10,17 +10,24 @@ import { FormErrors } from '@/types/Erorrs';
 import { UpdateUserType } from '@/types/User';
 import { useUpdateUser } from '@/hooks/useUpdateUser';
 import { Skeleton } from '../ui/skeleton';
+import { AxiosError } from 'axios';
+
+// Fehler-Typ vom Backend
+interface ErrorResponse {
+  message: string;
+}
 
 export const EditUserProfile = () => {
   const { mutate: updateUser, isPending } = useUpdateUser();
   const { user } = useUserSession();
   const { showLogin } = useLoginPopup();
   const [errors, setErrors] = useState<FormErrors>({});
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     newUsername: user?.username || '',
     newEmail: user?.email || '',
-    confirmEmail: '',
+    confirmEmail: user?.email || '',
     newAddress: user?.address || '',
     currentPassword: '',
     newPassword: '',
@@ -29,20 +36,33 @@ export const EditUserProfile = () => {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
+    setErrors({ ...errors, [event.target.name]: undefined });
+    setServerError(null);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      newUsername: user?.username || '',
+      newEmail: user?.email || '',
+      confirmEmail: user?.email || '',
+      newAddress: user?.address || '',
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    });
+    setErrors({});
+    setServerError(null);
   };
 
   const handleSave = async () => {
     const newErrors: FormErrors = {};
 
-    if (!formData.newUsername) {
+    if (!formData.newUsername)
       newErrors.username = 'Benutzername ist erforderlich.';
-    }
-
     if (formData.newEmail !== formData.confirmEmail) {
       newErrors.email = 'E-Mail-Adressen stimmen nicht überein.';
       newErrors.confirmEmail = 'E-Mail-Adressen stimmen nicht überein.';
     }
-
     if (
       formData.newPassword &&
       formData.newPassword !== formData.confirmPassword
@@ -50,49 +70,47 @@ export const EditUserProfile = () => {
       newErrors.newPassword = 'Passwörter stimmen nicht überein.';
       newErrors.confirmPassword = 'Passwörter stimmen nicht überein.';
     }
-
     if (formData.newPassword && !formData.currentPassword) {
       newErrors.currentPassword = 'Bitte aktuelles Passwort eingeben.';
     }
-
-    if (!formData.newAddress) {
-      newErrors.address = 'Adresse ist erforderlich.';
-    }
+    if (!formData.newAddress) newErrors.address = 'Adresse ist erforderlich.';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    try {
-      if (user === null) {
-        alert('user nicht vorhanden');
-        return;
-      }
-
-      const updatedUser: UpdateUserType = {
-        id: user.id,
-        address:
-          formData.newAddress !== '' ? formData.newAddress : user.address,
-        email: formData.newEmail !== '' ? formData.newEmail : user.email,
-        username:
-          formData.newUsername !== '' ? formData.newUsername : user.username,
-        newPassword: formData.newPassword !== '' ? formData.newPassword : '',
-        currentPassword:
-          formData.currentPassword !== '' ? formData.currentPassword : '',
-        role: 'USER',
-      };
-
-      updateUser(updatedUser);
-      setErrors({});
-    } catch {
-      console.log('');
+    if (!user) {
+      showLogin();
+      return;
     }
+
+    const updatedUser: UpdateUserType = {
+      id: user.id,
+      address: formData.newAddress || user.address,
+      email: formData.newEmail || user.email,
+      username: formData.newUsername || user.username,
+      newPassword: formData.newPassword || '',
+      currentPassword: formData.currentPassword || '',
+      role: user.role || 'USER',
+    };
+
+    updateUser(updatedUser, {
+      onSuccess: () => {
+        resetForm();
+      },
+      onError: (err: AxiosError<ErrorResponse>) => {
+        const errorMessage =
+          err.response?.data?.message ||
+          'Profil konnte nicht aktualisiert werden.';
+        setServerError(errorMessage);
+      },
+    });
   };
 
   return (
     <>
-      {user === null ? (
+      {!user ? (
         <Card className="text-center shadow-lg">
           <CardHeader>
             <CardTitle className="text-xl md:text-2xl">
@@ -122,7 +140,6 @@ export const EditUserProfile = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6 p-6">
-              {/* ÄNDERUNG: isPending statt isLoading verwenden */}
               {isPending ? (
                 <div className="space-y-4">
                   <div className="grid gap-4 md:grid-cols-2">
@@ -145,6 +162,11 @@ export const EditUserProfile = () => {
                 </div>
               ) : (
                 <>
+                  {serverError && (
+                    <div className="rounded-md bg-red-100 p-3 text-sm text-red-700">
+                      {serverError}
+                    </div>
+                  )}
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="username">Benutzername</Label>
@@ -153,6 +175,7 @@ export const EditUserProfile = () => {
                         name="newUsername"
                         value={formData.newUsername}
                         onChange={handleChange}
+                        disabled={isPending}
                       />
                       {errors.username && (
                         <p className="text-sm text-red-500">
@@ -167,6 +190,7 @@ export const EditUserProfile = () => {
                         name="newAddress"
                         value={formData.newAddress}
                         onChange={handleChange}
+                        disabled={isPending}
                       />
                       {errors.address && (
                         <p className="text-sm text-red-500">{errors.address}</p>
@@ -183,6 +207,7 @@ export const EditUserProfile = () => {
                         name="newEmail"
                         value={formData.newEmail}
                         onChange={handleChange}
+                        disabled={isPending}
                       />
                       {errors.email && (
                         <p className="text-sm text-red-500">{errors.email}</p>
@@ -196,6 +221,7 @@ export const EditUserProfile = () => {
                         name="confirmEmail"
                         value={formData.confirmEmail}
                         onChange={handleChange}
+                        disabled={isPending}
                       />
                       {errors.confirmEmail && (
                         <p className="text-sm text-red-500">
@@ -216,6 +242,7 @@ export const EditUserProfile = () => {
                         name="currentPassword"
                         value={formData.currentPassword}
                         onChange={handleChange}
+                        disabled={isPending}
                       />
                       {errors.currentPassword && (
                         <p className="text-sm text-red-500">
@@ -231,6 +258,7 @@ export const EditUserProfile = () => {
                         name="newPassword"
                         value={formData.newPassword}
                         onChange={handleChange}
+                        disabled={isPending}
                       />
                       {errors.newPassword && (
                         <p className="text-sm text-red-500">
@@ -248,6 +276,7 @@ export const EditUserProfile = () => {
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleChange}
+                        disabled={isPending}
                       />
                       {errors.confirmPassword && (
                         <p className="text-sm text-red-500">
@@ -258,8 +287,18 @@ export const EditUserProfile = () => {
                   </div>
 
                   <div className="flex justify-end gap-4">
-                    <Button variant="outline">Abbrechen</Button>
-                    <Button variant="default" onClick={handleSave}>
+                    <Button
+                      variant="outline"
+                      onClick={resetForm}
+                      disabled={isPending}
+                    >
+                      Abbrechen
+                    </Button>
+                    <Button
+                      variant="default"
+                      onClick={handleSave}
+                      disabled={isPending}
+                    >
                       Speichern
                     </Button>
                   </div>

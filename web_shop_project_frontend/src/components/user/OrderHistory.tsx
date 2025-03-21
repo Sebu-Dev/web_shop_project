@@ -6,12 +6,6 @@ import { useState } from 'react';
 import { useGetOrders } from '@/hooks/useGetOrders';
 import { useUserSession } from '@/store/useUserSessionStore';
 
-const testUser = {
-  id: 'user123',
-  name: 'Max Mustermann',
-  email: 'max.mustermann@example.com',
-};
-
 export const OrderHistory = () => {
   const [selectedOrder, setSelectedOrder] = useState<{
     pdfUrl: string;
@@ -62,8 +56,7 @@ export const OrderHistory = () => {
       <h1 className="mb-6 text-2xl font-bold md:text-3xl">Bestellverlauf</h1>
       <div className="mb-6">
         <p className="text-sm text-gray-600">
-          Eingeloggt als: {user?.username || testUser.name} (
-          {user?.email || testUser.email})
+          Eingeloggt als: {user?.username} ({user?.email})
         </p>
       </div>
 

@@ -11,16 +11,15 @@ export const useRegister = () => {
   return useMutation({
     mutationFn: register,
     onMutate: async () => {
-      // Verzögerung von 0,5 Sekunden (500 ms)
       await new Promise((resolve) => setTimeout(resolve, 500));
     },
     onError: (error) => {
       console.log('Registration failed:', error);
     },
-    onSuccess: (user: UserType) => {
-      setUser(user);
+    onSuccess: (response: UserType) => {
+      setUser(response);
       syncWithUser();
-      console.log('Registration successful:', user);
+      console.log('Registration successful:', response);
     },
   });
 };

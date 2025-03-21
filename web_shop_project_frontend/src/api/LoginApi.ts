@@ -36,6 +36,7 @@ export const login = async (credentials: {
     }
   } catch (error) {
     handleError(error);
+    throw error;
   }
 };
 
@@ -56,6 +57,7 @@ export const deleteUser = async () => {
     }
   } catch (error) {
     handleError(error);
+    throw error;
   }
 };
 
@@ -92,5 +94,6 @@ export const register = async (userData: RegisterUserInput) => {
     }
   } catch (error) {
     handleError(error);
+    throw error;
   }
 };
