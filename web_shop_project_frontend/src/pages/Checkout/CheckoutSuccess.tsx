@@ -3,11 +3,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2 } from 'lucide-react';
+import { Order } from '@/types/OrderType';
 
 const CheckoutSuccess: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const pdfUrl = location.state?.pdfUrl as string | undefined;
+  const order = location.state?.order as Order | undefined;
 
   const handleContinueShopping = () => {
     navigate('/');
@@ -42,7 +44,10 @@ const CheckoutSuccess: React.FC = () => {
                   className="h-full w-full rounded-md border"
                 />
               </div>
-              <a href={pdfUrl} download="Rechnung.pdf">
+              <a
+                href={pdfUrl}
+                download={`Rechnung_${order?.orderNumber || 'bestellung'}.pdf`}
+              >
                 <Button variant="outline">Rechnung herunterladen</Button>
               </a>
             </div>

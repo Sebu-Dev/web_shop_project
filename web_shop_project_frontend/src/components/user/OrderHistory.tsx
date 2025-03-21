@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { useGetOrders } from '@/hooks/useGetOrders';
 import { useUserSession } from '@/store/useUserSessionStore';
 
-// Testdaten (später vom Backend ersetzt)
 const testUser = {
   id: 'user123',
   name: 'Max Mustermann',
@@ -21,7 +20,6 @@ export const OrderHistory = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { user } = useUserSession();
 
-  // userId als String oder leerer String, falls nicht vorhanden
   const {
     data: orders,
     isLoading,
@@ -77,7 +75,10 @@ export const OrderHistory = () => {
         <div className="space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
             {orders.map((order) => (
-              <Card key={order.orderNumber} className="flex flex-col">
+              <Card
+                key={order.id ?? order.orderNumber}
+                className="flex flex-col"
+              >
                 <CardHeader>
                   <CardTitle className="text-lg">
                     Bestellung vom {formatDate(order.date)}

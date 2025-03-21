@@ -15,6 +15,7 @@ import { Order, OrderRequest } from '@/types/OrderType';
 import { calculateOrder } from '@/utils/OrderCalculator';
 import { useUserSession } from '@/store/useUserSessionStore';
 import { usePostOrder } from '@/hooks/usePostOrder';
+import { useLoginPopup } from '@/store/useLoginPopupStore';
 
 const CheckoutPage: React.FC = () => {
   const [selectedOrder, setSelectedOrder] = useState<{
@@ -27,14 +28,17 @@ const CheckoutPage: React.FC = () => {
   const { user } = useUserSession();
   const navigate = useNavigate();
   const { mutate: postOrder } = usePostOrder();
+  const { showLogin } = useLoginPopup();
 
   const calculations = useMemo(() => calculateOrder(cart), [cart]);
 
   const handleCheckout = useCallback(async () => {
     if (!user) {
+      showLogin();
       setError('Bitte melden Sie sich an, um die Bestellung abzuschließen.');
       return;
     }
+
     setLoading(true);
     setError(null);
     try {
@@ -56,25 +60,22 @@ const CheckoutPage: React.FC = () => {
         totalWithShipping: calculations.totalWithShipping,
       };
 
-      // Sende die Bestellung ans Backend
       postOrder(orderRequest, {
         onSuccess: (createdOrder: Order) => {
-          // Nach erfolgreichem POST das Order-Objekt mit ID verwenden
           const order: Order = {
             ...orderRequest,
             id: createdOrder.id, // ID vom Backend
             items: orderRequest.items.map((item, index) => ({
-              id: createdOrder.items[index]?.id || 0, // IDs vom Backend oder Fallback
+              id: (createdOrder.items && createdOrder.items[index]?.id) || 0, // Fallback, falls items fehlt
               productId: item.productId,
               quantity: item.quantity,
               price: item.price,
-              name: cart[index].name, // Zusätzliche Daten aus dem Cart für PDF
+              name: cart[index].name,
               description: cart[index].description,
               image: cart[index].image,
             })),
           };
 
-          // PDF generieren und weiterleiten
           generateInvoicePDF(order).then((generatedPdfUrl) => {
             setSelectedOrder({ pdfUrl: generatedPdfUrl, order });
             clearCart();
@@ -82,6 +83,11 @@ const CheckoutPage: React.FC = () => {
               state: { pdfUrl: generatedPdfUrl, order },
             });
           });
+        },
+        onError: (err) => {
+          const errorMessage = err instanceof Error ? err.message : String(err);
+          setError(errorMessage);
+          console.error('Fehler beim Senden der Bestellung:', err);
         },
       });
     } catch (err) {
@@ -100,6 +106,7 @@ const CheckoutPage: React.FC = () => {
     postOrder,
     clearCart,
     navigate,
+    showLogin,
   ]);
 
   return (
@@ -174,7 +181,7 @@ const CheckoutPage: React.FC = () => {
           <Button
             variant="default"
             onClick={handleCheckout}
-            disabled={loading || !user}
+            disabled={loading}
             className="w-full md:w-auto"
           >
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

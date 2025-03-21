@@ -7,13 +7,23 @@ import { useMutation } from '@tanstack/react-query';
 export const useLogin = () => {
   const { setUser } = useUserSession();
   const { syncWithUser } = useCartStore();
+
   return useMutation({
     mutationFn: login,
-    onError: (error) => console.log('Login failed:', error),
-    onSuccess: (user: UserType) => {
-      setUser(user);
-      syncWithUser();
-      console.log('Login successful:', user);
+    onMutate: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    },
+    onError: (error) => {
+      console.log('Login failed:', error);
+    },
+    onSuccess: (response) => {
+      if (response && 'id' in response && 'username' in response) {
+        const user = response as UserType;
+        setUser(user);
+        syncWithUser();
+      } else {
+        throw new Error('Ungültige Anmeldedaten oder Serverfehler');
+      }
     },
   });
 };
