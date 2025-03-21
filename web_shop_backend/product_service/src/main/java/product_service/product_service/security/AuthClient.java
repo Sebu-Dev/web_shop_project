@@ -20,7 +20,7 @@ public class AuthClient {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-
+        System.out.println("AuthClient: Sending validation request with token: " + token.substring(0, 20) + "...");
         try {
             ResponseEntity<UserDetailsDTO> response = restTemplate.exchange(
                     userServiceUrl,

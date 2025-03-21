@@ -28,7 +28,8 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-        if ("/api/users/login".equals(path) || "/api/users/register".equals(path)) {
+        if ("/api/users/login".equals(path) || "/api/users/register".equals(path)
+                || "/api/users/validate".equals(path)) {
             filterChain.doFilter(request, response);
             return;
         }

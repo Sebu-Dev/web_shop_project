@@ -30,11 +30,13 @@ public class SecurityConfig {
 
         @Bean
         public JwtValidationFilter jwtValidationFilter(AuthClient authClient) {
+                System.out.println("Initializing JwtValidationFilter");
                 return new JwtValidationFilter(authClient);
         }
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                System.out.println("Configuring SecurityFilterChain");
                 http
                                 .csrf(csrf -> csrf.disable())
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))

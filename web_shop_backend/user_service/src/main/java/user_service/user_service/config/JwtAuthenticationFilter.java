@@ -12,11 +12,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.security.Key;
 import java.util.Collections;
 
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String SECRET_KEY = "your-very-secure-secret-key-with-at-least-32-chars"; // Mindestens 32

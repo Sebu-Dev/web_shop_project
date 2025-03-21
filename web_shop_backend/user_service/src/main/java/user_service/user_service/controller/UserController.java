@@ -11,6 +11,9 @@ import user_service.user_service.security.JwtUtil;
 import user_service.user_service.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,14 +94,13 @@ public class UserController {
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<UserDetailsDTO> validateToken(@RequestHeader("Authorization") String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+    public ResponseEntity<UserDetailsDTO> validateToken(HttpServletRequest request) {
+        String token = extractTokenFromCookie(request);
+        if (token == null) {
             return ResponseEntity.status(401).build();
         }
 
-        String token = authHeader.substring(7);
         String username = jwtUtil.extractUsername(token);
-
         if (username != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (jwtUtil.validateToken(token, userDetails)) {
@@ -127,6 +129,18 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
+    }
+
+    private String extractTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("authToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 
 }
