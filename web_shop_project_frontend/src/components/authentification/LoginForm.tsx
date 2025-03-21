@@ -21,20 +21,20 @@ export function LoginForm({
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // Ladezustand hinzufügen
+  const [isLoading, setIsLoading] = useState(false);
   const { mutate } = useLogin();
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError(null);
-    setIsLoading(true); // Ladezustand aktivieren
+    setIsLoading(true);
     const credentials = {
       username,
       password,
     };
     mutate(credentials, {
       onSuccess: () => {
-        setIsLoading(false); // Ladezustand beenden
+        setIsLoading(false);
         onClose(); // Schließt Popup nur bei Erfolg
       },
       onError: (err) => {
@@ -113,21 +113,10 @@ export function LoginForm({
               onChange={(e) => setUsername(e.target.value)}
               required
               disabled={isLoading} // Eingabe während Ladevorgang deaktivieren
-              className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              className="rounded-md border-gray-300 text-gray-700 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
           <div className="grid gap-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="font-medium text-gray-700">
-                Password
-              </Label>
-              <a
-                href="#"
-                className="text-sm text-blue-600 transition-colors hover:text-blue-700 hover:underline"
-              >
-                Forgot Password?
-              </a>
-            </div>
             <Input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -135,7 +124,7 @@ export function LoginForm({
               type="password"
               required
               disabled={isLoading} // Eingabe während Ladevorgang deaktivieren
-              className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              className="rounded-md border-gray-300 text-gray-700 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
           <Button

@@ -182,7 +182,11 @@ const CheckoutPage: React.FC = () => {
             variant="default"
             onClick={handleCheckout}
             disabled={loading}
-            className="w-full md:w-auto"
+            className={
+              loading
+                ? 'w-full md:w-auto'
+                : 'w-full text-2xl hover:text-neutral-400 md:w-auto'
+            }
           >
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {loading ? 'Wird verarbeitet...' : 'Bestellung abschließen'}

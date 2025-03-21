@@ -171,6 +171,7 @@ export const EditUserProfile = () => {
                     <div className="space-y-2">
                       <Label htmlFor="username">Benutzername</Label>
                       <Input
+                        className="text-gray-700"
                         id="username"
                         name="newUsername"
                         value={formData.newUsername}
@@ -186,6 +187,7 @@ export const EditUserProfile = () => {
                     <div className="space-y-2">
                       <Label htmlFor="address">Adresse</Label>
                       <Input
+                        className="text-gray-700"
                         id="address"
                         name="newAddress"
                         value={formData.newAddress}
@@ -202,6 +204,7 @@ export const EditUserProfile = () => {
                     <div className="space-y-2">
                       <Label htmlFor="email">Neue E-Mail</Label>
                       <Input
+                        className="text-gray-700"
                         type="email"
                         id="email"
                         name="newEmail"
@@ -216,6 +219,7 @@ export const EditUserProfile = () => {
                     <div className="space-y-2">
                       <Label htmlFor="confirmEmail">E-Mail bestätigen</Label>
                       <Input
+                        className="text-gray-700"
                         type="email"
                         id="confirmEmail"
                         name="confirmEmail"
@@ -237,6 +241,7 @@ export const EditUserProfile = () => {
                         Aktuelles Passwort
                       </Label>
                       <Input
+                        className="text-gray-700"
                         type="password"
                         id="currentPassword"
                         name="currentPassword"
@@ -253,6 +258,7 @@ export const EditUserProfile = () => {
                     <div className="space-y-2">
                       <Label htmlFor="newPassword">Neues Passwort</Label>
                       <Input
+                        className="text-gray-700"
                         type="password"
                         id="newPassword"
                         name="newPassword"
@@ -271,6 +277,7 @@ export const EditUserProfile = () => {
                         Neues Passwort bestätigen
                       </Label>
                       <Input
+                        className="text-gray-700"
                         type="password"
                         id="confirmPassword"
                         name="confirmPassword"

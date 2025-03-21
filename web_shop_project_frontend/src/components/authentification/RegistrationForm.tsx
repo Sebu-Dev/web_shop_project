@@ -110,7 +110,7 @@ export function RegistrationForm({
         </div>
 
         {registrationError && (
-          <div className="rounded-md bg-red-100 p-3 text-sm text-red-700">
+          <div className="rounded-md bg-red-100 p-3 text-sm text-gray-700 text-red-700">
             {registrationError}
           </div>
         )}
@@ -128,7 +128,7 @@ export function RegistrationForm({
               placeholder="Your username"
               required
               disabled={isLoading}
-              className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              className="rounded-md border-gray-300 text-gray-700 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
           <div className="grid gap-2">
@@ -143,7 +143,7 @@ export function RegistrationForm({
               placeholder="m@example.com"
               required
               disabled={isLoading}
-              className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              className="rounded-md border-gray-300 text-gray-700 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
           <div className="grid gap-2">
@@ -157,7 +157,7 @@ export function RegistrationForm({
               type="password"
               required
               disabled={isLoading}
-              className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              className="rounded-md border-gray-300 text-gray-700 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
           <div className="grid gap-2">
@@ -174,7 +174,7 @@ export function RegistrationForm({
               type="password"
               required
               disabled={isLoading}
-              className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              className="rounded-md border-gray-300 text-gray-700 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
           <div className="grid gap-2">
@@ -189,7 +189,7 @@ export function RegistrationForm({
               placeholder="Your address"
               required
               disabled={isLoading}
-              className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              className="rounded-md border-gray-300 text-gray-700 focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
           <Button
